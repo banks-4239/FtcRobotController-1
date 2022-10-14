@@ -5,6 +5,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -15,7 +17,8 @@ public class DriveCode extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Initialize SampleMecanumDrive
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
+        Servo clawServo = hardwareMap.get(Servo.class, "claw");
+        DcMotor armMotor = hardwareMap.get(DcMotorEx.class, "arm");
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -24,16 +27,52 @@ public class DriveCode extends LinearOpMode {
         // this is what we get from autonomous
         drive.setPoseEstimate(PoseStorage.currentPose);
 
+        boolean clawOpen = false;
+        boolean yPressed = false;
+
         waitForStart();
 
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
+            if(gamepad2.dpad_up){
+                //move arm up
+                armMotor.setPower(-.5);
+                clawServo.setPosition(1);
+                clawOpen = false;
+            }else if(gamepad2.dpad_down){
+                //move arm down
+                armMotor.setPower(.5);
+                clawServo.setPosition(1);
+                clawOpen = false;
+            }else{
+                armMotor.setPower(0);
+            }
+
+            if(gamepad2.y && clawOpen && !yPressed){
+                //close claw
+                clawServo.setPosition(1);
+                clawOpen = false;
+                yPressed = true;
+            }
+            if (gamepad2.y && !clawOpen && !yPressed) {
+                //Open claw
+                clawServo.setPosition(.9);
+                clawOpen = true;
+                yPressed = true;
+            }
+            if (!gamepad2.y && yPressed) {
+                yPressed = false;
+            }
+
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
+                            //-forward/backward
+                            +(gamepad1.left_stick_y/2),
+                            //-strafe
+                            +(gamepad1.left_stick_x/2),
+                            //-rotate
+                            +(gamepad1.right_stick_x/2)
                     )
             );
 
@@ -44,9 +83,11 @@ public class DriveCode extends LinearOpMode {
             Pose2d poseEstimate = drive.getPoseEstimate();
 
             // Print pose to telemetry
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
+            //telemetry.addData("x", poseEstimate.getX());
+            //telemetry.addData("y", poseEstimate.getY());
+            //telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("Claw is open = ", clawOpen);
+            telemetry.addData("Arm Height", armMotor.getCurrentPosition());
             telemetry.update();
         }
     }

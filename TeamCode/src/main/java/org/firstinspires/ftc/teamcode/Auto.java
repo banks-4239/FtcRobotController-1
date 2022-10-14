@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * something disastrous occurs. Such a sample has not been included.
  */
 @Autonomous
-public class AutoTransferPose extends LinearOpMode {
+public class Auto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare your drive class
@@ -52,6 +52,7 @@ public class AutoTransferPose extends LinearOpMode {
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
         Trajectory traj = drive.trajectoryBuilder(startPose)
+
                 .splineTo(new Vector2d(45, 45), 0)
                 .build();
 
