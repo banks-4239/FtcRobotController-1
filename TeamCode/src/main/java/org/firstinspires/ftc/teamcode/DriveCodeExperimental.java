@@ -12,12 +12,11 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
 @TeleOp(group = "advanced")
-public class DriveCode extends LinearOpMode {
+public class DriveCodeExperimental extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize SampleMecanumDrive
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
         Servo clawServo = hardwareMap.get(Servo.class, "claw");
         DcMotor armMotor = hardwareMap.get(DcMotorEx.class, "arm");
         // We want to turn off velocity control for teleop
@@ -28,6 +27,8 @@ public class DriveCode extends LinearOpMode {
         // this is what we get from autonomous
         drive.setPoseEstimate(PoseStorage.currentPose);
 
+        double driveSpeedMod = .33;
+        double turnSpeedMod = .5;
         boolean clawOpen = false;
         boolean yPressed = false;
 
@@ -36,29 +37,25 @@ public class DriveCode extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
-//            drive.setMotorPowers(1,0,0,0);
-//            sleep(1000);
-//            drive.setMotorPowers(0,1,0,0);
-//            sleep(1000);
-//            drive.setMotorPowers(0,0,1,0);
-//            sleep(1000);
-//            drive.setMotorPowers(0,0,0,1);
-//            sleep(1000);
-//            drive.setMotorPowers(0,0,0,0);
-
-            if(gamepad2.dpad_up){
-                //move arm up
-                armMotor.setPower(-.5);
+//            if(gamepad2.dpad_up){
+//                //move arm up
+//                armMotor.setPower(-.5);
+//                clawServo.setPosition(1);
+//                clawOpen = false;
+//            }else if(gamepad2.dpad_down){
+//                //move arm down
+//                armMotor.setPower(.5);
+//                clawServo.setPosition(1);
+//                clawOpen = false;
+//            }else{
+//                armMotor.setPower(0);
+//            }
+            armMotor.setPower(-gamepad2.left_stick_y/2);
+            if(!(armMotor.getPower() == 0)) {
                 clawServo.setPosition(1);
                 clawOpen = false;
-            }else if(gamepad2.dpad_down){
-                //move arm down
-                armMotor.setPower(.5);
-                clawServo.setPosition(1);
-                clawOpen = false;
-            }else{
-                armMotor.setPower(0);
             }
+
 
             if(gamepad2.y && clawOpen && !yPressed){
                 //close claw
@@ -79,11 +76,11 @@ public class DriveCode extends LinearOpMode {
             drive.setWeightedDrivePower(
                     new Pose2d(
                             //-forward/backward
-                            -(gamepad1.left_stick_y/2),
+                            -(gamepad1.left_stick_y*driveSpeedMod),
                             //-strafe
-                            -(gamepad1.left_stick_x/2),
+                            -(gamepad1.left_stick_x*driveSpeedMod),
                             //-rotate
-                            -(gamepad1.right_stick_x/2)
+                            -(gamepad1.right_stick_x*turnSpeedMod)
                     )
             );
 

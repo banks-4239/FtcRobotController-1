@@ -14,22 +14,54 @@ public class MeepMeepTesting {
         MeepMeep meepMeep = new MeepMeep(800);
 
         Vector2d blueSignalRight = new Vector2d(-35.4,35.4);
-        Pose2d startLocation = new Pose2d(36.4,-64,Math.toRadians(90));
+        Pose2d startLocation = new Pose2d(-33,-63,Math.toRadians(90));
+        Pose2d startLocationRedRight = new Pose2d(33,-63,Math.toRadians(90));
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
 
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(startLocation)
+                        drive.trajectorySequenceBuilder(startLocationRedRight)
+                                .lineTo(new Vector2d(11.8,-63))
+                                .lineTo(new Vector2d(11.6,-36))
+                                .turn(Math.toRadians(90))
+                                .lineTo(new Vector2d(11.6,-23.8))
+                                //liftarm
+                                .lineTo(new Vector2d(7.4,-23.8))
+                                //openclaw
+                                //closeclaw
+                                .lineTo(new Vector2d(11.6,-23.8))
+                                //lowerarmtocorrectconestackheight
+                                //openclaw
+                                .lineTo(new Vector2d(11.6,-12.2))
+                                .turn(Math.toRadians(180))
+                                .lineTo(new Vector2d(63,-12.2))
+                                //closeclaw
+                                //liftarmpastconestack
+                                .lineTo(new Vector2d(11.6,-12.2))
+                                .turn(Math.toRadians(180))
+                                .lineTo(new Vector2d(11.6,-23.8))
+                                //liftarm
+                                .lineTo(new Vector2d(7.4,-23.8))
+                                //openclaw
+                                //closeclaw
+                                .lineTo(new Vector2d(11.6,-23.8))
+                                //lowerarmtocorrectconestackheight
+                                //openclaw
+                                .lineTo(new Vector2d(11.6,-12.2))
+                                .turn(Math.toRadians(180))
+                                .lineTo(new Vector2d(63,-12.2))
+                                //closeclaw
+                                //liftarmpastconestack
+                                .lineTo(new Vector2d(11.6,-12.2))
+                                .turn(Math.toRadians(180))
 
 
 
 
-
-
-                                .splineTo(blueSignalRight,Math.toRadians(180))
-
-                                .build()
+                        //.forward(40)
+                        //.splineTo(blueSignalRight,Math.toRadians(180))
+                        .build()
                 );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
