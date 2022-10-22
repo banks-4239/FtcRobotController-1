@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
@@ -35,6 +36,9 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  */
 @Autonomous
 public class AutoRedLeft extends LinearOpMode {
+    double speed = 0.5;
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare your drive class
@@ -46,40 +50,55 @@ public class AutoRedLeft extends LinearOpMode {
         // of the field
         // This example sets the bot at x: 10, y: 15, and facing 90 degrees (turned counter-clockwise)
         Pose2d startPose = new Pose2d(-33,-63,Math.toRadians(90));
+        drive.setPoseEstimate(startPose);
 
         TrajectorySequence redLeft = drive.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(-11.8,-63))
-                .lineTo(new Vector2d(-11.6,-36))
+                .lineTo(new Vector2d(-11.8,-63),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineTo(new Vector2d(-11.6,-36),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(Math.toRadians(-90))
-                .lineTo(new Vector2d(-11.6,-23.8))
+                .lineTo(new Vector2d(-11.6,-23.8),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 //liftarm
-                .lineTo(new Vector2d(-7.4,-23.8))
+                .lineTo(new Vector2d(-7.4,-23.8),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 //openclaw
                 //closeclaw
-                .lineTo(new Vector2d(-11.6,-23.8))
+                .lineTo(new Vector2d(-11.6,-23.8),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 //lowerarmtocorrectconestackheight
                 //openclaw
-                .lineTo(new Vector2d(-11.6,-12.2))
+                .lineTo(new Vector2d(-11.6,-12.2),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(Math.toRadians(180))
-                .lineTo(new Vector2d(-63,-12.2))
+                .lineTo(new Vector2d(-63,-12.2),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 //closeclaw
                 //liftarmpastconestack
-                .lineTo(new Vector2d(-11.6,-12.2))
+                .lineTo(new Vector2d(-11.6,-12.2),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(Math.toRadians(180))
-                .lineTo(new Vector2d(-11.6,-23.8))
+                .lineTo(new Vector2d(-11.6,-23.8),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 //liftarm
-                .lineTo(new Vector2d(-7.4,-23.8))
+                .lineTo(new Vector2d(-7.4,-23.8),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 //openclaw
                 //closeclaw
-                .lineTo(new Vector2d(-11.6,-23.8))
+                .lineTo(new Vector2d(-11.6,-23.8),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 //lowerarmtocorrectconestackheight
                 //openclaw
-                .lineTo(new Vector2d(-11.6,-12.2))
+                .lineTo(new Vector2d(-11.6,-12.2),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(Math.toRadians(180))
-                .lineTo(new Vector2d(-63,-12.2))
+                .lineTo(new Vector2d(-63,-12.2),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 //closeclaw
                 //liftarmpastconestack
-                .lineTo(new Vector2d(-11.6,-12.2))
+                .lineTo(new Vector2d(-11.6,-12.2),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL/2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(Math.toRadians(180))
 
 
@@ -89,7 +108,8 @@ public class AutoRedLeft extends LinearOpMode {
                 //.splineTo(blueSignalRight,Math.toRadians(180))
                 .build();
 
-//        drive.setPoseEstimate(startPose);
+
+
 //        Trajectory traj1 = drive.trajectoryBuilder(startPose)
 //                .lineTo(new Vector2d(-11.8,-63))
 //                .build();
