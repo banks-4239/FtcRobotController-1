@@ -2,35 +2,45 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
 @TeleOp(group = "advanced")
-@Disabled
-public class DriveCodeExperimental extends LinearOpMode {
+public class DriveCode2Drivers extends LinearOpMode {
+
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize SampleMecanumDrive
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Servo clawServo = hardwareMap.get(Servo.class, "claw");
-        DcMotor armMotor = hardwareMap.get(DcMotorEx.class, "arm");
+        SampleMecanumDrive robot = new SampleMecanumDrive(hardwareMap);
+
+
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //robot.armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Retrieve our pose from the PoseStorage.currentPose static field
         // this is what we get from autonomous
-        drive.setPoseEstimate(PoseStorage.currentPose);
+        robot.setPoseEstimate(PoseStorage.currentPose);
 
-        double driveSpeedMod = .33;
-        double turnSpeedMod = .5;
+        //change values here to change everywhere
+        int armPositionHighScore = -2867;
+        int armPositionMidScore = -2239;
+        int armPositionLowScore = -1593;
+        int armPositionStartingLocation = 0;
+        double armMotorPower = 0.5;
+
         boolean clawOpen = false;
         boolean yPressed = false;
 
@@ -39,35 +49,31 @@ public class DriveCodeExperimental extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
-//            if(gamepad2.dpad_up){
-//                //move arm up
-//                armMotor.setPower(-.5);
-//                clawServo.setPosition(1);
-//                clawOpen = false;
-//            }else if(gamepad2.dpad_down){
-//                //move arm down
-//                armMotor.setPower(.5);
-//                clawServo.setPosition(1);
-//                clawOpen = false;
-//            }else{
-//                armMotor.setPower(0);
-//            }
-            armMotor.setPower(-gamepad2.left_stick_y/2);
-            if(!(armMotor.getPower() == 0)) {
-                clawServo.setPosition(1);
+
+            if(gamepad2.dpad_up){
+                //Moves are to High Score Position
+                robot.moveArmTo(armPositionHighScore);
+                clawOpen = false;
+            }else if(gamepad2.dpad_down){
+                //move arm down to start location
+                robot.moveArmTo(armPositionStartingLocation);
+                clawOpen = false;
+            }else if(gamepad2.dpad_left){
+                robot.moveArmTo(armPositionMidScore);
+                clawOpen = false;
+
+            }else if(gamepad2.dpad_right){
+                robot.moveArmTo(armPositionLowScore);
                 clawOpen = false;
             }
 
-
             if(gamepad2.y && clawOpen && !yPressed){
-                //close claw
-                clawServo.setPosition(1);
+                robot.closeClaw();
                 clawOpen = false;
                 yPressed = true;
             }
             if (gamepad2.y && !clawOpen && !yPressed) {
-                //Open claw
-                clawServo.setPosition(.9);
+                robot.openClaw();
                 clawOpen = true;
                 yPressed = true;
             }
@@ -75,30 +81,32 @@ public class DriveCodeExperimental extends LinearOpMode {
                 yPressed = false;
             }
 
-            drive.setWeightedDrivePower(
+            robot.setWeightedDrivePower(
                     new Pose2d(
                             //-forward/backward
-                            -(gamepad1.left_stick_y*driveSpeedMod),
+                            -(gamepad1.left_stick_y/2),
                             //-strafe
-                            -(gamepad1.left_stick_x*driveSpeedMod),
+                            -(gamepad1.left_stick_x/2),
                             //-rotate
-                            -(gamepad1.right_stick_x*turnSpeedMod)
+                            -(gamepad1.right_stick_x/2)
                     )
             );
 
             // Update everything. Odometry. Etc.
-            drive.update();
+            robot.update();
 
             // Read pose
-            Pose2d poseEstimate = drive.getPoseEstimate();
+            Pose2d poseEstimate = robot.getPoseEstimate();
 
             // Print pose to telemetry
             //telemetry.addData("x", poseEstimate.getX());
             //telemetry.addData("y", poseEstimate.getY());
             //telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.addData("Claw is open = ", clawOpen);
-            telemetry.addData("Arm Height", armMotor.getCurrentPosition());
+            telemetry.addData("Arm Height", robot.armMotor.getCurrentPosition());
             telemetry.update();
         }
     }
+
+
 }

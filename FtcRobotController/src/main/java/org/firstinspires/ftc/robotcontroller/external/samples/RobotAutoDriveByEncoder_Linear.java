@@ -148,6 +148,8 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
             leftDrive.setTargetPosition(newLeftTarget);
             rightDrive.setTargetPosition(newRightTarget);
 
+
+
             // Turn On RUN_TO_POSITION
             leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);

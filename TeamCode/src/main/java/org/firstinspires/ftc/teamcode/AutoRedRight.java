@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -34,11 +35,16 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  * something disastrous occurs. Such a sample has not been included.
  */
 @Autonomous
+@Disabled
 public class AutoRedRight extends LinearOpMode {
+    double speed = 0.5;
     @Override
+
     public void runOpMode() throws InterruptedException {
+
         // Declare your drive class
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
         Servo clawServo = hardwareMap.get(Servo.class, "claw");
         DcMotor armMotor = hardwareMap.get(DcMotorEx.class, "arm");
         // Set the pose estimate to where you know the bot will start in autonomous
@@ -124,4 +130,10 @@ drive.followTrajectorySequence(redLeft);
         // Transfer the current pose to PoseStorage so we can use it in TeleOp
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
+//    public void closeClaw(){
+//        clawServo.setPosition(1);
+//    }
+//    public void openClaw(){
+//        clawServo.setPosition(0.9);
+//    }
 }

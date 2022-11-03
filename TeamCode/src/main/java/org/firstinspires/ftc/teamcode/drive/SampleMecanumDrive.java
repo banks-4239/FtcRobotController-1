@@ -72,9 +72,17 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
-
+    public Servo clawServo;
+    public DcMotor armMotor;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
+
+    int armPositionHighScore = -2867;
+    int armPositionMidScore = -2239;
+    int armPositionLowScore = -1593;
+    int armPositionStartingLocation = 0;
+    int armPositionConeStack = -850;
+    double armMotorPower = 0.5;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -122,9 +130,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "br");
         rightFront = hardwareMap.get(DcMotorEx.class, "fr");
-
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-
+         clawServo = hardwareMap.get(Servo.class, "claw");
+         armMotor = hardwareMap.get(DcMotorEx.class, "arm");
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
@@ -319,4 +327,47 @@ rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
+    public void closeClaw() {
+        clawServo.setPosition(1);
+    }
+    public void openClaw() {
+        clawServo.setPosition(0.9);
+    }
+//    public void raiseArmToHigh() {
+//        armMotor.setTargetPosition(armPositionHighScore);
+//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        armMotor.setPower(armMotorPower);
+//        closeClaw();
+//    }
+//    public void raiseArmToLow() {
+//        armMotor.setTargetPosition(armPositionLowScore);
+//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        armMotor.setPower(armMotorPower);
+//        closeClaw();
+//    }
+//    public void raiseArmToMedium() {
+//        armMotor.setTargetPosition(armPositionMidScore);
+//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        armMotor.setPower(armMotorPower);
+//        closeClaw();
+//    }
+//    public void raiseArmToStart() {
+//        armMotor.setTargetPosition(armPositionStartingLocation);
+//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        armMotor.setPower(armMotorPower);
+//        closeClaw();
+//    }
+//    public void raiseArmToConeStack() {
+//        armMotor.setTargetPosition(armPositionConeStack);
+//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        armMotor.setPower(armMotorPower);
+//        closeClaw();
+//    }
+    public void moveArmTo(int armPosition){
+        armMotor.setTargetPosition(armPosition);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(armMotorPower);
+        closeClaw();
+    }
 }
+

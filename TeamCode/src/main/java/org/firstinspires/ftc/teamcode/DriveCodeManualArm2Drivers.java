@@ -6,13 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
 @TeleOp(group = "advanced")
-public class DriveCode extends LinearOpMode {
+public class DriveCodeManualArm2Drivers extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize SampleMecanumDrive
@@ -36,15 +37,7 @@ public class DriveCode extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
-//            drive.setMotorPowers(1,0,0,0);
-//            sleep(1000);
-//            drive.setMotorPowers(0,1,0,0);
-//            sleep(1000);
-//            drive.setMotorPowers(0,0,1,0);
-//            sleep(1000);
-//            drive.setMotorPowers(0,0,0,1);
-//            sleep(1000);
-//            drive.setMotorPowers(0,0,0,0);
+            //drive.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             if(gamepad2.dpad_up){
                 //move arm up
