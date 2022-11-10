@@ -39,15 +39,20 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 @Autonomous
 
 public class AutoRedLeft extends LinearOpMode {
-    double speed = 0.5;
+    //1 for left, -1 for right
+    int xreflect = 1;
     int armPositionHighScore = -2867;
     int armPositionMidScore = -2239;
     int armPositionLowScore = -1593;
     int armPositionStartingLocation = 0;
-    int armPositionConeStack = -850;
+    int armPositionConeStack = -870;
     double armMotorPower = 0.5;
     int armPositionLiftConeStack = -550;
     int armPositionConeStackDifference = 125;
+    double clawOffset = 1.5;
+    double tileWidth = 23.5;
+    double speedConstant = 1;
+    double slow = 0.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -59,126 +64,91 @@ public class AutoRedLeft extends LinearOpMode {
         // Refer to https://www.learnroadrunner.com/trajectories.html#coordinate-system for a map
         // of the field
         // This example sets the bot at x: 10, y: 15, and facing 90 degrees (turned counter-clockwise)
-        Pose2d startPose = new Pose2d(-33, -63, Math.toRadians(90));
-        Vector2d redLeft1 = new Vector2d(-11.6, -63);
-        Vector2d redLeft2 = new Vector2d(-11.6, -36);
+        Pose2d startPose = new Pose2d(-35.25*xreflect, -62
+                , Math.toRadians(90));
+//        Vector2d redLeft1 = new Vector2d(-0.5*tileWidth, -2.5*tileWidth);
+//        Vector2d redLeft2 = new Vector2d(-0.5*tileWidth, -1.5*tileWidth);
+//        //rotate-90
+//        Vector2d redLeftScoreSetup = new Vector2d(-0.5*tileWidth, -1*tileWidth+clawOffset);
+//        Vector2d redLeftScore = new Vector2d(-6.75, -25.5+clawOffset);
+//        //redleftscoresetup
+//        Vector2d redLeft3 = new Vector2d(-0.5*tileWidth, -0.5*tileWidth);
+//        //rotate180
+//        Vector2d redLeftConeStackSetup = new Vector2d(-54, -11.75-clawOffset);
+//        Vector2d redLeftConeStack = new Vector2d(-60.5, -11.75-clawOffset);
+        Pose2d redLeft1 = new Pose2d(-11.75*xreflect, -58.75, Math.toRadians(90));
+        Pose2d redLeft2 = new Pose2d(-11.75*xreflect, -35.25, Math.toRadians(90));
+
         //rotate-90
-        Vector2d redLeftScoreSetup = new Vector2d(-11.6, -24.8);
-        Vector2d redLeftScore = new Vector2d(-7.4, -24.8);
-        //redleftscoresetup
-        Vector2d redLeft3 = new Vector2d(-11.6, -12.2);
-        //rotate180
-        Vector2d redLeftConeStackSetup = new Vector2d(-56, -12.2);
-        Vector2d redLeftConeStack = new Vector2d(-62, -12.2);
+        Pose2d redLeftScoreSetup = new Pose2d(-11.75*xreflect, -22.5 + clawOffset, Math.toRadians(0));
+        Pose2d redLeftScore = new Pose2d((-11.75 + 3.5)*xreflect, -22.5 + clawOffset, Math.toRadians(0));
+        //redleftscoresetup Original y value for above poses: -24.5
+        Pose2d redLeft3 = new Pose2d(-11.75*xreflect, -5.75,Math.toRadians(0));
+//        Pose2d redLeft3 = new Pose2d(RedLeft3, Math.toRadians(0));
+//        Pose2d redLeft4 = new Pose2d(RedLeft3, Math.toRadians(180));
+        //rotate180 Original y value for above and below poses: -11.75
+        Pose2d redLeftConeStackSetup = new Pose2d(-55*xreflect, -5.75, Math.toRadians(180));
+        Pose2d redLeftConeStack = new Pose2d(-64*xreflect, -5.75, Math.toRadians(180));
+        Pose2d redLeft4 = new Pose2d((-11.75-3.25)*xreflect, -5.75,Math.toRadians(180));
+        Pose2d redLeftScoreSetup2 = new Pose2d((-11.75-3.25)*xreflect, -22.5 + clawOffset, Math.toRadians(0));
+        Pose2d redLeftScore2 = new Pose2d((-11.75 + 3.5 -3.25)*xreflect, -22.5 + clawOffset, Math.toRadians(0));
         //redleftconestacksetup
         //redLeft3
         //redLeftScoreSetup
 
         robot.setPoseEstimate(startPose);
 
-//
-//                .lineTo(new Vector2d(-11.6, -12.2), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .turn(Math.toRadians(180))
-//                .lineTo(new Vector2d(-63, -12.2), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .addDisplacementMarker(() -> {
-//                   robot.closeClaw();
-//                    robot.raiseArmToLow();
-//                })
-//
-//                .lineTo(new Vector2d(-11.6, -12.2), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .turn(Math.toRadians(180))
-//                .lineTo(new Vector2d(-11.6, -23.8), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .addDisplacementMarker(() -> {
-//                    robot.raiseArmToHigh();
-//                })
-//
-//                .lineTo(new Vector2d(-7.4, -23.8), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .addDisplacementMarker(() -> {
-//                    robot.openClaw();
-//
-//                    sleep(500);
-//                    robot.closeClaw();
-//                  //  robot.moveArmTo(armPositionConeStack+50);
-//                })
-//                .lineTo(new Vector2d(-11.6, -23.8), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//
-//                .addDisplacementMarker(() -> {
-//                    robot.moveArmTo(armPositionStartingLocation);
-//                    robot.raiseArmToStart();
-//                })
-//                .waitSeconds(10)
 
-//                .addDisplacementMarker(() -> {
-//                    robot.
-//                    clawServo.setPosition(0.9);
-//                })
-//
-//                .lineTo(new Vector2d(-11.6, -12.2), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .turn(Math.toRadians(180))
-//                .lineTo(new Vector2d(-63, -12.2), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .addDisplacementMarker(() -> {
-//                    clawServo.setPosition(1);
-//                    //liftarmpastconestack
-//                })
-//
-//                .lineTo(new Vector2d(-11.6, -12.2), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 2), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .turn(Math.toRadians(180))
-        //              .build();
         TrajectorySequence redLeftStartToHighPole = robot.trajectorySequenceBuilder(startPose)
                 //strafe to right
-                .lineTo(redLeft1, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL  ), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(redLeft1, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
 
                 .addDisplacementMarker(() -> {
                     robot.moveArmTo(armPositionHighScore);
                 })
                 //move forward by 1 square
-                .lineTo(redLeft2, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL ), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(redLeft2, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
 
                 //turns to the right
                 .turn(Math.toRadians(-90))
                 //strafe left to pole (high)
-                .lineTo(redLeftScoreSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL ), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(redLeftScoreSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
                 .build();
         Trajectory redLeftMoveToScore = robot.trajectoryBuilder(redLeftStartToHighPole.end())
-                .lineTo(redLeftScore, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL ), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .forward(3.5)
+//                .lineToLinearHeading(redLeftScore, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
                 .build();
         Trajectory redLeftBackOffOfPole = robot.trajectoryBuilder(redLeftMoveToScore.end())
-                .lineTo(redLeftScoreSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL ), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(redLeftScoreSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
                 .build();
         TrajectorySequence redLeftGoToConeStack = robot.trajectorySequenceBuilder(redLeftBackOffOfPole.end())
-                .lineTo(redLeft3, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL ), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(redLeft3, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
                 .turn(Math.toRadians(180))
-                .lineTo(redLeftConeStackSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL ), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(redLeftConeStackSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
                 .addDisplacementMarker(() -> {
                     robot.openClaw();
                 })
-                .lineTo(redLeftConeStack, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 5), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(redLeftConeStack, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 5), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
                 .build();
-            Trajectory redLeftBackOffOfConeStack = robot.trajectoryBuilder(redLeftGoToConeStack.end())
-                    .lineTo(redLeftConeStackSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL / 5), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
-            TrajectorySequence redLeftConeStackSetupToHighPoleSetup = robot.trajectorySequenceBuilder(redLeftBackOffOfConeStack.end())
-                    .lineTo(redLeft3, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL ), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .turn(Math.toRadians(180))
-                    .lineTo(redLeftScoreSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL ), DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
+        Trajectory redLeftBackOffOfConeStack = robot.trajectoryBuilder(redLeftGoToConeStack.end())
+                .lineToLinearHeading(redLeftConeStackSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
+                .build();
+        TrajectorySequence redLeftConeStackSetupToHighPoleSetup = robot.trajectorySequenceBuilder(redLeftBackOffOfConeStack.end())
+                .lineToLinearHeading(redLeft4, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * slow))
+                .turn(Math.toRadians(180))
+                .lineToLinearHeading(redLeftScoreSetup2, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
+                .build();
 
         //    TrajectorySequence name = robot.trajectorySequenceBuilder(redLeftStartToHighPole.end())
         //            .build();
@@ -193,23 +163,18 @@ public class AutoRedLeft extends LinearOpMode {
 
         robot.followTrajectorySequence(redLeftStartToHighPole);
 
-        for(int i = 0;i<5;i++) {
-//            robot.moveArmTo(armPositionHighScore);
-//            sleep(2500);
-
-
+        for (int i = 0; i < 5; i++) {
             robot.followTrajectory(redLeftMoveToScore);
             sleep(250);
             robot.openClaw();
             sleep(250);
             robot.followTrajectory(redLeftBackOffOfPole);
-            robot.moveArmTo(armPositionConeStack+armPositionConeStackDifference*i);
-
+            robot.moveArmTo(armPositionConeStack + armPositionConeStackDifference * i);
             robot.followTrajectorySequence(redLeftGoToConeStack);
             robot.closeClaw();
             sleep(250);
             //liftConeFromStack
-            robot.moveArmTo(armPositionConeStack+armPositionConeStackDifference*i + armPositionLiftConeStack);
+            robot.moveArmTo(armPositionConeStack + armPositionConeStackDifference * i + armPositionLiftConeStack);
             sleep(1000);
 
             robot.followTrajectory(redLeftBackOffOfConeStack);
