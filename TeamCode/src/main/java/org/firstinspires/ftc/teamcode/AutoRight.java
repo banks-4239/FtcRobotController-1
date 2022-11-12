@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -38,9 +36,12 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  */
 @Autonomous
 
-public class AutoRedLeft extends LinearOpMode {
+public class AutoRight extends LinearOpMode {
     //1 for left, -1 for right
-    int xreflect = 1;
+    int xreflect = -1;
+    //0 for left, 180 for right
+
+    int rotateReflect = 0;
     int armPositionHighScore = -2867;
     int armPositionMidScore = -2239;
     int armPositionLowScore = -1593;
@@ -53,6 +54,7 @@ public class AutoRedLeft extends LinearOpMode {
     double tileWidth = 23.5;
     double speedConstant = 1;
     double slow = 0.5;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -80,7 +82,7 @@ public class AutoRedLeft extends LinearOpMode {
         Pose2d redLeft2 = new Pose2d(-11.75*xreflect, -35.25, Math.toRadians(90));
 
         //rotate-90
-        Pose2d redLeftScoreSetup = new Pose2d(-11.75*xreflect, -22.5 + clawOffset, Math.toRadians(0));
+        Pose2d redLeftScoreSetup = new Pose2d(-11.75*xreflect, -22.5 + clawOffset, Math.toRadians(rotateReflect-0));
         Pose2d redLeftScore = new Pose2d((-11.75 + 3.5)*xreflect, -22.5 + clawOffset, Math.toRadians(0));
         //redleftscoresetup Original y value for above poses: -24.5
         Pose2d redLeft3 = new Pose2d(-11.75*xreflect, -5.75,Math.toRadians(0));
@@ -112,7 +114,7 @@ public class AutoRedLeft extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
 
                 //turns to the right
-                .turn(Math.toRadians(-90))
+                .turn(Math.toRadians(-90*xreflect))
                 //strafe left to pole (high)
                 .lineToLinearHeading(redLeftScoreSetup, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
