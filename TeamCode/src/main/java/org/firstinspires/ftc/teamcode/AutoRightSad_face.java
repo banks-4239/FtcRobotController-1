@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -35,10 +36,10 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  * something disastrous occurs. Such a sample has not been included.
  */
 @Autonomous
-
-public class AutoLeft extends LinearOpMode {
+@Disabled
+public class AutoRightSad_face extends LinearOpMode {
     //1 for left, -1 for right
-    int xreflect = 1;
+    int xreflect = -1;
     //0 for left, 180 for right
 
     int rotateReflect = 0;
@@ -54,7 +55,6 @@ public class AutoLeft extends LinearOpMode {
     double tileWidth = 23.5;
     double speedConstant = 1;
     double slow = 0.5;
-
 
     @Override
     public void runOpMode() throws InterruptedException {

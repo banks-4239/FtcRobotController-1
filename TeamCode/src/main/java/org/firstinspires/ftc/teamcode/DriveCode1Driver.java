@@ -35,12 +35,11 @@ public class DriveCode1Driver extends LinearOpMode {
         robot.setPoseEstimate(PoseStorage.currentPose);
 
          //change values here to change everywhere
-        int armPositionHighScore = -2867;
-        int armPositionMidScore = -2239;
-        int armPositionLowScore = -1593;
+        int armPositionHighScore = -2669;
+        int armPositionMidScore = -2086;
+        int armPositionLowScore = -1415;
         int armPositionStartingLocation = 0;
         double armMotorPower = 0.5;
-
         boolean clawOpen = false;
         boolean yPressed = false;
 
@@ -114,10 +113,13 @@ public class DriveCode1Driver extends LinearOpMode {
             //telemetry.addData("x", poseEstimate.getX());
             //telemetry.addData("y", poseEstimate.getY());
             //telemetry.addData("heading", poseEstimate.getHeading());
+
+            telemetry.addData("At Bottom: ", !robot.armHeightSwitch.getState());
             telemetry.addData("Claw is open = ", clawOpen);
             telemetry.addData("Arm Height", robot.armMotor.getCurrentPosition());
             telemetry.update();
         }
+
     }
 
 

@@ -32,9 +32,9 @@ public class ArmCalibration extends LinearOpMode {
         robot.setPoseEstimate(PoseStorage.currentPose);
 
          //change values here to change everywhere
-        int armPositionHighScore = -2867;
-        int armPositionMidScore = -2239;
-        int armPositionLowScore = -1593;
+        int armPositionHighScore = -2669;
+        int armPositionMidScore = -2086;
+        int armPositionLowScore = -1415;
         int armPositionStartingLocation = 0;
         double armMotorPower = 0.5;
 
@@ -46,6 +46,9 @@ public class ArmCalibration extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
+            if(gamepad1.b){
+                calibrateArm();
+            }
             if(gamepad2.dpad_up){
                 robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()-50);
@@ -132,11 +135,26 @@ public class ArmCalibration extends LinearOpMode {
             //telemetry.addData("x", poseEstimate.getX());
             //telemetry.addData("y", poseEstimate.getY());
             //telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("At Bottom: ", !robot.armHeightSwitch.getState());
             telemetry.addData("Claw is open = ", clawOpen);
             telemetry.addData("Arm Height", robot.armMotor.getCurrentPosition());
             telemetry.update();
         }
     }
-
+    public void calibrateArm(){
+        SampleMecanumDrive robot = new SampleMecanumDrive(hardwareMap);
+        while(robot.armHeightSwitch.getState()){
+            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.armMotor.setTargetPosition(100);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setPower(0.1);
+        }while(!robot.armHeightSwitch.getState()){
+            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.armMotor.setTargetPosition(-100);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setPower(0.25);
+        }
+        robot.moveArmTo(0);
+        }
 
 }

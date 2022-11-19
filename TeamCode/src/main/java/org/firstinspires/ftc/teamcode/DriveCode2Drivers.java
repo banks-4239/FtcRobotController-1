@@ -35,9 +35,9 @@ public class DriveCode2Drivers extends LinearOpMode {
         robot.setPoseEstimate(PoseStorage.currentPose);
 
         //change values here to change everywhere
-        int armPositionHighScore = -2867;
-        int armPositionMidScore = -2239;
-        int armPositionLowScore = -1593;
+        int armPositionHighScore = -2669;
+        int armPositionMidScore = -2086;
+        int armPositionLowScore = -1415;
         int armPositionStartingLocation = 0;
         double armMotorPower = 0.5;
 

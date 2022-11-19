@@ -22,9 +22,11 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -74,6 +76,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<DcMotorEx> motors;
     public Servo clawServo;
     public DcMotor armMotor;
+    public DigitalChannel armHeightSwitch;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
@@ -88,7 +91,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+                new Pose2d(0.5, 0.5, Math.toRadians(1.0)), 0.5);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -130,6 +133,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "br");
         rightFront = hardwareMap.get(DcMotorEx.class, "fr");
+        armHeightSwitch = hardwareMap.get(DigitalChannel.class, "magswitch");
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
          clawServo = hardwareMap.get(Servo.class, "claw");
          armMotor = hardwareMap.get(DcMotorEx.class, "arm");
@@ -363,6 +367,7 @@ rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
 //        armMotor.setPower(armMotorPower);
 //        closeClaw();
 //    }
+
     public void moveArmTo(int armPosition){
         armMotor.setTargetPosition(armPosition);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
