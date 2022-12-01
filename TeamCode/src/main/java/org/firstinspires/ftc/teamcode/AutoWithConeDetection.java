@@ -21,24 +21,34 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-@TeleOp
-public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
+@Autonomous
+public class AutoWithConeDetection extends LinearOpMode
 {
+
+
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
-
     static final double FEET_PER_METER = 3.28084;
 
     // Lens intrinsics
@@ -52,18 +62,34 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
     // UNITS ARE METERS
     double tagsize = 0.166;
-
-    int ID_TAG_OF_INTEREST = 0; // Tag ID 18 from the 36h11 family
-
     AprilTagDetection tagOfInterest = null;
+
+    int park_1 = 0; // Tag ID 18 from the 36h11 family
+    int park_2 = 1;
+    int park_3 = 2;
+    int xReflect;
+    int rotateReflect;
+    int armPositionHighScore = -2669;
+    int armPositionMidScore = -2086;
+    int armPositionLowScore = -1415;
+    int armPositionStartingLocation = 0;
+    int armPositionConeStack = -635;
+    double armMotorPower = 0.5;
+    int armPositionLiftConeStack = -550;
+    int armPositionConeStackDifference = 125;
+    double clawOffset = 1.5;
+    double tileWidth = 23.5;
+    double speedConstant = 0.5;
+    double slow = 0.5;
+
 
     @Override
     public void runOpMode()
     {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
-
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -79,15 +105,50 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
             }
         });
-
         telemetry.setMsTransmissionInterval(50);
+
+        robot.getConstants();
+        Pose2d startPose = new Pose2d(-35.25, -62, Math.toRadians(90));
+        Vector2d zone1 = new Vector2d(-35.25+24, -11.5);
+        Vector2d zone3 = new Vector2d(-35.25-24, -11.5);
+        Vector2d zone2 = new Vector2d(-35.25, -11.5);
+        Pose2d Zone2 = new Pose2d(-35.25, -11.5,Math.toRadians(180));
+        Pose2d highScore = new Pose2d(-30, -4,Math.toRadians(45));
+        drive.setPoseEstimate(startPose);
+
+        TrajectorySequence startToZone2 = drive.trajectorySequenceBuilder(startPose)
+                .lineTo(zone2)
+                .turn(Math.toRadians(-45))
+                .build();
+        TrajectorySequence zone2ToScore = drive.trajectorySequenceBuilder(startToZone2.end())
+                .lineToLinearHeading(highScore)
+                .build();
+        TrajectorySequence scoreToZone2 = drive.trajectorySequenceBuilder(zone2ToScore.end())
+                .lineToLinearHeading(Zone2)
+                .build();
+
+
+
+
+        TrajectorySequence startToZone1 = drive.trajectorySequenceBuilder(startPose)
+                .lineTo(zone2)
+                .lineTo(zone1)
+                .build();
+        TrajectorySequence startToZone3 = drive.trajectorySequenceBuilder(startPose)
+                .lineTo(zone2)
+                .lineTo(zone3)
+                .build();
+
 
         /*
          * The INIT-loop:
+         * .addDisplacementMarker(() -> {
+                    robot.moveArmTo(armPositionHighScore);
+                })
          * This REPLACES waitForStart!
          */
-        while (!isStarted() && !isStopRequested())
-        {
+        drive.closeClaw();
+        while (!isStarted() && !isStopRequested()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
             if(currentDetections.size() != 0)
@@ -96,7 +157,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
                 for(AprilTagDetection tag : currentDetections)
                 {
-                    if(tag.id == ID_TAG_OF_INTEREST)
+                    if(tag.id == park_1 || tag.id == park_2 || tag.id == park_3)
                     {
                         tagOfInterest = tag;
                         tagFound = true;
@@ -150,62 +211,58 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
          * during the init loop.
          */
 
-        /* Update the telemetry */
-        if(tagOfInterest != null)
-        {
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
-            telemetry.update();
-        }
-        else
-        {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
-            telemetry.update();
-        }
 
-        /* Actually do something useful */
+
+        drive.moveArmTo(armPositionHighScore);
+        drive.followTrajectorySequence(startToZone2);
+        drive.followTrajectorySequence(zone2ToScore);
+        sleep(250);
+        drive.openClaw();
+        sleep(250);
+        drive.moveArmTo(armPositionConeStack);
+        drive.followTrajectorySequence(scoreToZone2);
+
+
+
+
+
+
+        /*
         if(tagOfInterest == null)
         {
-            /*
-             * Insert your autonomous code here, presumably running some default configuration
-             * since the tag was never sighted during INIT
-             */
+            //code to run when nothing was ever detected
+            // drive.followTrajectory(startToZone2);
         }
-        else
-        {
-            /*
-             * Insert your autonomous code here, probably using the tag pose to decide your configuration.
-             */
+        else {
 
-            // e.g.
-            if(tagOfInterest.pose.x <= 20)
+            if(tagOfInterest.id == park_1)
             {
-                // do something
+                telemetry.clearAll();
+                telemetry.addData("zone","1");
+                telemetry.update();
+                drive.followTrajectorySequence(startToZone1);
             }
-            else if(tagOfInterest.pose.x >= 20 && tagOfInterest.pose.x <= 50)
+            else if(tagOfInterest.id == park_2)
             {
-                // do something else
+                telemetry.clearAll();
+                telemetry.addData("zone","2");
+                telemetry.update();
+
+                drive.followTrajectory(startToZone2);
             }
-            else if(tagOfInterest.pose.x >= 50)
+            else if(tagOfInterest.id == park_3)
             {
-                // do something else
+                telemetry.clearAll();
+                telemetry.addData("zone","3");
+                telemetry.update();
+                drive.followTrajectorySequence(startToZone3);
             }
         }
+        */
 
-
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
     }
-
     void tagToTelemetry(AprilTagDetection detection)
     {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }
-

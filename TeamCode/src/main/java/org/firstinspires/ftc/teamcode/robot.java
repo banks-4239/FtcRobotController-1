@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,9 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 /**
  * Example opmode demonstrating how to hand-off the pose from your autonomous opmode to your teleop
@@ -38,41 +34,71 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  */
 @Autonomous
 @Disabled
-public class Common extends LinearOpMode {
+public class robot extends LinearOpMode {
 
     int xReflect;
     int rotateReflect;
-    int armPositionHighScore = -2867;
-    int armPositionMidScore = -2239;
-    int armPositionLowScore = -1593;
+    int armPositionHighScore = -2669;
+    int armPositionMidScore = -2086;
+    int armPositionLowScore = -1415;
     int armPositionStartingLocation = 0;
-    int armPositionConeStack = -870;
+    int armPositionConeStack = -635;
     double armMotorPower = 0.5;
     int armPositionLiftConeStack = -550;
     int armPositionConeStackDifference = 125;
     double clawOffset = 1.5;
     double tileWidth = 23.5;
-    double speedConstant = 1;
+    double speedConstant = 0.5;
     double slow = 0.5;
-    SampleMecanumDrive robot = new SampleMecanumDrive(hardwareMap);
+    Servo clawServo = hardwareMap.get(Servo.class, "claw");
+    DcMotor armMotor = hardwareMap.get(DcMotorEx.class, "arm");
+    DigitalChannel armHeightSwitch = hardwareMap.get(DigitalChannel .class, "magswitch");
+    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
     @Override
     public void runOpMode() throws InterruptedException {
 
 
     }
     public void calibrateArm(){
-        SampleMecanumDrive robot = new SampleMecanumDrive(hardwareMap);
-        while(robot.armHeightSwitch.getState()){
-            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.armMotor.setTargetPosition(100);
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.armMotor.setPower(0.1);
-        }while(!robot.armHeightSwitch.getState()){
-            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.armMotor.setTargetPosition(-100);
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.armMotor.setPower(0.25);
+        while(drive.armHeightSwitch.getState()){
+            armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            armMotor.setTargetPosition(100);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armMotor.setPower(0.1);
+        }while(!drive.armHeightSwitch.getState()){
+            armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            armMotor.setTargetPosition(-100);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armMotor.setPower(0.25);
         }
-        robot.moveArmTo(0);
+        moveArmTo(0);
+    }
+    public static void getConstants(){
+        int xReflect;
+        int rotateReflect;
+        int armPositionHighScore = -2669;
+        int armPositionMidScore = -2086;
+        int armPositionLowScore = -1415;
+        int armPositionStartingLocation = 0;
+        int armPositionConeStack = -635;
+        double armMotorPower = 0.5;
+        int armPositionLiftConeStack = -550;
+        int armPositionConeStackDifference = 125;
+        double clawOffset = 1.5;
+        double tileWidth = 23.5;
+        double speedConstant = 0.5;
+        double slow = 0.5;
+    }
+    public void moveArmTo(int armPosition){
+        armMotor.setTargetPosition(armPosition);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(armMotorPower);
+        closeClaw();
+    }
+    public void closeClaw() {
+        clawServo.setPosition(1);
+    }
+    public void openClaw() {
+        clawServo.setPosition(0.9);
     }
 }

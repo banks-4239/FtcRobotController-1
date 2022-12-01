@@ -56,8 +56,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1.15837219;
 
@@ -80,12 +80,20 @@ public class SampleMecanumDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    int armPositionHighScore = -2867;
-    int armPositionMidScore = -2239;
-    int armPositionLowScore = -1593;
+    int xReflect;
+    int rotateReflect;
+    int armPositionHighScore = -2669;
+    int armPositionMidScore = -2086;
+    int armPositionLowScore = -1415;
     int armPositionStartingLocation = 0;
-    int armPositionConeStack = -850;
+    int armPositionConeStack = -635;
     double armMotorPower = 0.5;
+    int armPositionLiftConeStack = -550;
+    int armPositionConeStackDifference = 125;
+    double clawOffset = 1.5;
+    double tileWidth = 23.5;
+    double speedConstant = 0.5;
+    double slow = 0.5;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
