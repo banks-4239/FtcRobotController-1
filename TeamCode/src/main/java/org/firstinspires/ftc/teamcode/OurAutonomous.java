@@ -40,9 +40,9 @@ public class OurAutonomous extends LinearOpMode {
 
     int xReflect;
     int rotateReflect;
-    int armPositionHighScore = -2669;
-    int armPositionMidScore = -2086;
-    int armPositionLowScore = -1415;
+    int armPositionHighScore = -2590;
+    int armPositionMidScore = -1933;
+    int armPositionLowScore = -1352;
     int armPositionStartingLocation = 0;
     int armPositionConeStack = -635;
     double armMotorPower = 0.5;
@@ -60,7 +60,7 @@ public class OurAutonomous extends LinearOpMode {
         Servo clawServo = hardwareMap.get(Servo.class, "claw");
         DcMotor armMotor = hardwareMap.get(DcMotorEx.class, "arm");
 
-        while(!gamepad1.a){
+        while(!gamepad1.a && !isStopRequested()){
             if(gamepad1.dpad_left){
                 //LEFT side
                 xReflect = 1;

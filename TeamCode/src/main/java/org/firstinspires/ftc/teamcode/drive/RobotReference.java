@@ -56,9 +56,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
  */
 public class RobotReference
 {
-
-
-
     public Gamepad activeGamepad1 = null;
     public Gamepad activeGamepad2 = null;
 

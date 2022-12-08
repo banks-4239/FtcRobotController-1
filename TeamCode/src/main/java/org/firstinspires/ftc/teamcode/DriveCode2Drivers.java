@@ -35,12 +35,19 @@ public class DriveCode2Drivers extends LinearOpMode {
         robot.setPoseEstimate(PoseStorage.currentPose);
 
         //change values here to change everywhere
-        int armPositionHighScore = -2669;
-        int armPositionMidScore = -2086;
-        int armPositionLowScore = -1415;
+        int armPositionHighScore = -2590;
+        int armPositionMidScore = -1933;
+        int armPositionLowScore = -1352;
+        int armPositionConeStack = -593;
+        int armPositionConeStackDifference = 125;
+        int[] armPositionConeStacks = new int[5];
         int armPositionStartingLocation = 0;
         double armMotorPower = 0.5;
-
+        armPositionConeStacks[0] = armPositionConeStack+0*armPositionConeStackDifference;
+        armPositionConeStacks[1] = armPositionConeStack+1*armPositionConeStackDifference;
+        armPositionConeStacks[2] = armPositionConeStack+2*armPositionConeStackDifference;
+        armPositionConeStacks[3] = armPositionConeStack+3*armPositionConeStackDifference;
+        armPositionConeStacks[4] = armPositionConeStack+4*armPositionConeStackDifference;
         boolean clawOpen = false;
         boolean yPressed = false;
 
@@ -65,19 +72,31 @@ public class DriveCode2Drivers extends LinearOpMode {
             }else if(gamepad2.dpad_right){
                 robot.moveArmTo(armPositionLowScore);
                 clawOpen = false;
+            }else if(gamepad2.y){
+                robot.moveArmTo(armPositionConeStacks[0]);
+                clawOpen = false;
+            }else if(gamepad2.x){
+                robot.moveArmTo(armPositionConeStacks[1]);
+                clawOpen = false;
+            }else if(gamepad2.a){
+                robot.moveArmTo(armPositionConeStacks[2]);
+                clawOpen = false;
+            }else if(gamepad2.b){
+                robot.moveArmTo(armPositionConeStacks[3]);
+                clawOpen = false;
             }
 
-            if(gamepad2.y && clawOpen && !yPressed){
+            if(gamepad1.y && clawOpen && !yPressed){
                 robot.closeClaw();
                 clawOpen = false;
                 yPressed = true;
             }
-            if (gamepad2.y && !clawOpen && !yPressed) {
+            if (gamepad1.y && !clawOpen && !yPressed) {
                 robot.openClaw();
                 clawOpen = true;
                 yPressed = true;
             }
-            if (!gamepad2.y && yPressed) {
+            if (!gamepad1.y && yPressed) {
                 yPressed = false;
             }
 

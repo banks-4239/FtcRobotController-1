@@ -222,6 +222,7 @@ rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
     public void followTrajectorySequence(TrajectorySequence trajectorySequence) {
         followTrajectorySequenceAsync(trajectorySequence);
+
         waitForIdle();
     }
 
