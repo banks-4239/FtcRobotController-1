@@ -145,12 +145,12 @@ public class ArmCalibration extends LinearOpMode {
         SampleMecanumDrive robot = new SampleMecanumDrive(hardwareMap);
         while(robot.armHeightSwitch.getState() && opModeIsActive() && !isStopRequested()){
             robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.armMotor.setTargetPosition(200);
+            robot.armMotor.setTargetPosition(-200);
             robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.armMotor.setPower(0.25);
         }while(!robot.armHeightSwitch.getState() && opModeIsActive() && !isStopRequested()){
             robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.armMotor.setTargetPosition(-100);
+            robot.armMotor.setTargetPosition(100);
             robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.armMotor.setPower(0.25);
         }
