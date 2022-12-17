@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -35,19 +36,19 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  * something disastrous occurs. Such a sample has not been included.
  */
 @Autonomous
-
+@Disabled
 public class OurAutonomous extends LinearOpMode {
 
     int xReflect;
     int rotateReflect;
-    int armPositionHighScore = -2590;
-    int armPositionMidScore = -1933;
-    int armPositionLowScore = -1352;
+    int armPositionHighScore = 2590;
+    int armPositionMidScore = 1933;
+    int armPositionLowScore = 1352;
     int armPositionStartingLocation = 0;
-    int armPositionConeStack = -635;
+    int armPositionConeStack = 635;
     double armMotorPower = 0.5;
-    int armPositionLiftConeStack = -550;
-    int armPositionConeStackDifference = 125;
+    int armPositionLiftConeStack = 550;
+    int armPositionConeStackDifference = -125;
     double clawOffset = 1.5;
     double tileWidth = 23.5;
     double speedConstant = 0.5;

@@ -64,19 +64,19 @@ public class AutoWithConeDetection extends LinearOpMode {
     double tagsize = 0.166;
     AprilTagDetection tagOfInterest = null;
 
-    int park_1 = 0; // Tag ID 18 from the 36h11 family
-    int park_2 = 1;
-    int park_3 = 2;
+    int park_1 = 8; // Tag ID 18 from the 36h11 family
+    int park_2 = 13;
+    int park_3 = 21;
     int xReflect;
     int rotateReflect;
-    int armPositionHighScore = -2590;
-    int armPositionMidScore = -1933;
-    int armPositionLowScore = -1352;
-    int armPositionStartingLocation = 0;
-    int armPositionConeStack = -550;
-    int armPositionConeStackDifference = 125;
+    int armPositionHighScore = 2860;
+    int armPositionMidScore = 2140;
+    int armPositionLowScore = 1570;
+    int armPositionStartingLocation = 10;//Used to be zero
+    int armPositionConeStack = 550;
+    int armPositionConeStackDifference = -125;
     double armMotorPower = 0.5;
-    int armPositionLiftConeStack = -593;
+    int armPositionLiftConeStack = 593;
     double clawOffset = 1.5;
     double tileWidth = 23.5;
     double speedConstant = 0.5;
@@ -110,12 +110,13 @@ public class AutoWithConeDetection extends LinearOpMode {
         telemetry.setMsTransmissionInterval(50);
 
         robot.getConstants();
-        Pose2d StartPose = new Pose2d(-35.25, -62, Math.toRadians(90));
+        Pose2d StartPose = new Pose2d(-36.25, -62, Math.toRadians(90));
         Vector2d zone1 = new Vector2d(-35.25 - 24, -11.5);
         Vector2d zone2 = new Vector2d(-35.25, -11.5);
         Vector2d zone3 = new Vector2d(-35.25 + 24, -11.5);
 
         Pose2d Score = new Pose2d(-30, -3, Math.toRadians(45));
+        Pose2d Score1 = new Pose2d(-29.5, -2, Math.toRadians(45));
         Pose2d RedLeftConeStack = new Pose2d(-64 * xReflect, -5.75, Math.toRadians(rotateReflect - 180));
         drive.setPoseEstimate(StartPose);
 
@@ -154,7 +155,8 @@ public class AutoWithConeDetection extends LinearOpMode {
         TrajectorySequence Zone1ToScore = drive.trajectorySequenceBuilder(scoreToConeStack.end())
                 .lineTo(zone2)
                 .turn(Math.toRadians(-135))
-                .lineToSplineHeading(Score)
+                .lineToSplineHeading(Score1)
+
                 .build();
 
 
@@ -184,6 +186,8 @@ public class AutoWithConeDetection extends LinearOpMode {
                 })
          * This REPLACES waitForStart!
          */
+        drive.moveArmTo(armPositionStartingLocation);//This line used to be nonexistent
+        sleep(250);//This line used to be nonexistent
         drive.closeClaw();
 
         while (!isStarted() && !isStopRequested()) {
@@ -240,7 +244,9 @@ public class AutoWithConeDetection extends LinearOpMode {
         //drive.followTrajectorySequence(startToZone2);
         //drive.followTrajectorySequence(zone2ToScore);
         drive.followTrajectorySequence(startToScore);
+
         for (int i = 0; i < conesToScore-1; i++) {
+
             drive.moveArmTo(armPositionConeStacks[i]);
             sleep(500);
             drive.openClaw();
@@ -251,19 +257,19 @@ public class AutoWithConeDetection extends LinearOpMode {
             drive.moveArmTo(armPositionHighScore);
             sleep(250);
             drive.followTrajectorySequence(Zone1ToScore);
+
         }
+        sleep(500);
         drive.moveArmTo(armPositionStartingLocation);
         sleep(500);
         drive.openClaw();
         sleep(250);
         drive.followTrajectorySequence(scoreToZone2);
+        if(tagOfInterest == null) {
 
-        if(tagOfInterest.id == park_1)
-        {
+        } else if(tagOfInterest.id == park_1) {
             drive.followTrajectorySequence(zone2ToZone1);
-        }
-        else if(tagOfInterest.id == park_3)
-        {
+        } else if(tagOfInterest.id == park_3) {
             drive.followTrajectorySequence(zone2ToZone3);
         }
 

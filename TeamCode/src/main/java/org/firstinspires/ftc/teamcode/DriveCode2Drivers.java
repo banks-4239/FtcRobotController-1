@@ -35,13 +35,13 @@ public class DriveCode2Drivers extends LinearOpMode {
         robot.setPoseEstimate(PoseStorage.currentPose);
 
         //change values here to change everywhere
-        int armPositionHighScore = -2590;
-        int armPositionMidScore = -1933;
-        int armPositionLowScore = -1352;
-        int armPositionConeStack = -593;
-        int armPositionConeStackDifference = 125;
+        int armPositionHighScore = 2683;
+        int armPositionMidScore = 1960;
+        int armPositionLowScore = 1329;
+        int armPositionConeStack = 593;
+        int armPositionConeStackDifference = -125;
         int[] armPositionConeStacks = new int[5];
-        int armPositionStartingLocation = 0;
+        int armPositionStartingLocation = 10;//Used to be zero
         double armMotorPower = 0.5;
         armPositionConeStacks[0] = armPositionConeStack+0*armPositionConeStackDifference;
         armPositionConeStacks[1] = armPositionConeStack+1*armPositionConeStackDifference;
