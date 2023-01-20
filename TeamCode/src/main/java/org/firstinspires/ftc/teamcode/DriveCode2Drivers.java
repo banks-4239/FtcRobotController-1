@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -34,11 +35,13 @@ public class DriveCode2Drivers extends LinearOpMode {
         // this is what we get from autonomous
         robot.setPoseEstimate(PoseStorage.currentPose);
 
-        //change values here to change everywhere
-        int armPositionHighScore = 2683;
-        int armPositionMidScore = 1960;
-        int armPositionLowScore = 1329;
-        int armPositionConeStack = 593;
+        //change values here to change everywherearmHeightSwitch;
+        int armTarget = 0;
+        int downALittle = 0;
+        int armPositionHighScore = 3214;
+        int armPositionMidScore = 2397;
+        int armPositionLowScore = 1577;
+        int armPositionConeStack = 1008;
         int armPositionConeStackDifference = -125;
         int[] armPositionConeStacks = new int[5];
         int armPositionStartingLocation = 10;//Used to be zero
@@ -56,23 +59,30 @@ public class DriveCode2Drivers extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
-
-            if(gamepad2.dpad_up){
-                //Moves are to High Score Position
-                robot.moveArmTo(armPositionHighScore);
-                clawOpen = false;
+            if(gamepad1.left_bumper){
+                downALittle = 600;
+            }
+            else{
+                downALittle = 0;
+            }
+            //////////////////////////////
+           if(gamepad2.dpad_up){
+                armTarget = armPositionHighScore;
+                //robot.moveArmTo(armPositionHighScore);
             }else if(gamepad2.dpad_down){
-                //move arm down to start location
-                robot.moveArmTo(armPositionStartingLocation);
-                clawOpen = false;
+                armTarget = armPositionStartingLocation;
+                //robot.moveArmTo(armPositionStartingLocation);
             }else if(gamepad2.dpad_left){
-                robot.moveArmTo(armPositionMidScore);
-                clawOpen = false;
-
+                armTarget = armPositionMidScore;
+                //robot.moveArmTo(armPositionMidScore);
             }else if(gamepad2.dpad_right){
-                robot.moveArmTo(armPositionLowScore);
-                clawOpen = false;
-            }else if(gamepad2.y){
+                armTarget = armPositionLowScore;
+                //robot.moveArmTo(armPositionLowScore);
+            }
+            else if(gamepad2.start){
+                calibrateArm();
+            }
+            else if(gamepad2.y){
                 robot.moveArmTo(armPositionConeStacks[0]);
                 clawOpen = false;
             }else if(gamepad2.x){
@@ -85,6 +95,7 @@ public class DriveCode2Drivers extends LinearOpMode {
                 robot.moveArmTo(armPositionConeStacks[3]);
                 clawOpen = false;
             }
+            robot.moveArmTo(armTarget-downALittle);
 
             if(gamepad1.y && clawOpen && !yPressed){
                 robot.closeClaw();
@@ -125,6 +136,20 @@ public class DriveCode2Drivers extends LinearOpMode {
             telemetry.addData("Arm Height", robot.armMotor.getCurrentPosition());
             telemetry.update();
         }
+    }    public void calibrateArm(){
+        SampleMecanumDrive robot = new SampleMecanumDrive(hardwareMap);
+        while(robot.armHeightSwitch.getState() && opModeIsActive() && !isStopRequested()){
+            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.armMotor.setTargetPosition(-200);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setPower(0.25);
+        }while(!robot.armHeightSwitch.getState() && opModeIsActive() && !isStopRequested()){
+            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.armMotor.setTargetPosition(100);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setPower(0.25);
+        }
+        robot.moveArmTo(0);
     }
 
 

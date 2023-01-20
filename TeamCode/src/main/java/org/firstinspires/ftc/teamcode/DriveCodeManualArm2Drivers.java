@@ -43,12 +43,12 @@ public class DriveCodeManualArm2Drivers extends LinearOpMode {
 
             if(gamepad2.dpad_up){
                 //move arm up
-                armMotor.setPower(-.5);
+                armMotor.setPower(.5);
                 clawServo.setPosition(1);
                 clawOpen = false;
             }else if(gamepad2.dpad_down){
                 //move arm down
-                armMotor.setPower(.5);
+                armMotor.setPower(-.5);
                 clawServo.setPosition(1);
                 clawOpen = false;
             }else{

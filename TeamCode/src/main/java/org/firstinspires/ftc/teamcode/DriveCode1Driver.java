@@ -35,9 +35,9 @@ public class DriveCode1Driver extends LinearOpMode {
         robot.setPoseEstimate(PoseStorage.currentPose);
 
          //change values here to change everywhere
-        int armPositionHighScore = 2683;
-        int armPositionMidScore = 1960;
-        int armPositionLowScore = 1329;
+        int armPositionHighScore = 3214;
+        int armPositionMidScore = 2497;
+        int armPositionLowScore = 1677;
         int armPositionStartingLocation = 0;
         double armMotorPower = 0.5;
         boolean clawOpen = false;

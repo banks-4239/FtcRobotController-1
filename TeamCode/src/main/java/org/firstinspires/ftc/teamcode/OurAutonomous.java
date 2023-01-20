@@ -41,9 +41,9 @@ public class OurAutonomous extends LinearOpMode {
 
     int xReflect;
     int rotateReflect;
-    int armPositionHighScore = 2590;
-    int armPositionMidScore = 1933;
-    int armPositionLowScore = 1352;
+    int armPositionHighScore = 3864;
+    int armPositionMidScore = 2748;
+    int armPositionLowScore = 1977;
     int armPositionStartingLocation = 0;
     int armPositionConeStack = 635;
     double armMotorPower = 0.5;
@@ -92,7 +92,7 @@ public class OurAutonomous extends LinearOpMode {
 //        //rotate180
 //        Vector2d redLeftConeStackSetup = new Vector2d(-54, -11.75-clawOffset);
 //        Vector2d redLeftConeStack = new Vector2d(-60.5, -11.75-clawOffset);
-        Pose2d redLeft1 = new Pose2d(-11.75* xReflect, -58.75, Math.toRadians(90));
+        Pose2d redLeft1 = new Pose2d(-9.75* xReflect, -56.75, Math.toRadians(90));
         Pose2d redLeft2 = new Pose2d(-11.75* xReflect, -35.25, Math.toRadians(90));
 
         //rotate-90

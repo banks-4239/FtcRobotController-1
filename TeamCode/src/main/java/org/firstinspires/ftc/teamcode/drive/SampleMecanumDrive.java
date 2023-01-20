@@ -72,10 +72,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     public Servo clawServo;
-    public DcMotor armMotor;
+    public DcMotorEx armMotor;
     public DigitalChannel armHeightSwitch;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -340,48 +340,22 @@ rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
-    public void closeClaw() {
+    public void openClaw() {
         clawServo.setPosition(1);
     }
-    public void openClaw() {
+    public void closeClaw() {
         clawServo.setPosition(0.9);
     }
-//    public void raiseArmToHigh() {
-//        armMotor.setTargetPosition(armPositionHighScore);
-//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        armMotor.setPower(armMotorPower);
-//        closeClaw();
-//    }
-//    public void raiseArmToLow() {
-//        armMotor.setTargetPosition(armPositionLowScore);
-//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        armMotor.setPower(armMotorPower);
-//        closeClaw();
-//    }
-//    public void raiseArmToMedium() {
-//        armMotor.setTargetPosition(armPositionMidScore);
-//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        armMotor.setPower(armMotorPower);
-//        closeClaw();
-//    }
-//    public void raiseArmToStart() {
-//        armMotor.setTargetPosition(armPositionStartingLocation);
-//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        armMotor.setPower(armMotorPower);
-//        closeClaw();
-//    }
-//    public void raiseArmToConeStack() {
-//        armMotor.setTargetPosition(armPositionConeStack);
-//        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        armMotor.setPower(armMotorPower);
-//        closeClaw();
-//    }
 
     public void moveArmTo(int armPosition){
         armMotor.setTargetPosition(armPosition);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(armMotorPower);
-        closeClaw();
+        //armMotor.setPower(armMotorPower);
+        //ticks/second
+        armMotor.setVelocity(1500);
+        //closeClaw();
+
     }
+
 }
 

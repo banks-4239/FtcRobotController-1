@@ -29,12 +29,15 @@ public class ArmCalibration extends LinearOpMode {
 
         // Retrieve our poserobot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); from the PoseStorage.currentPose static field
         // this is what we get from autonomous
-        robot.setPoseEstimate(PoseStorage.currentPose);
+        robot.setPoseEstimate(new Pose2d(-36.25, -62, Math.toRadians(90)));
+        //robot.setPoseEstimate(PoseStorage.currentPose);
 
          //change values here to change everywhere
-        int armPositionHighScore = 2683;
-        int armPositionMidScore = 1960;
-        int armPositionLowScore = 1329;
+        int armTarget = 0;
+        int downALittle = 0;
+        int armPositionHighScore = 3214;
+        int armPositionMidScore = 2397;
+        int armPositionLowScore = 1577;
         int armPositionStartingLocation = 0;
         double armMotorPower = 0.5;
 
@@ -49,54 +52,37 @@ public class ArmCalibration extends LinearOpMode {
             if(gamepad1.b){
                 calibrateArm();
             }
+            /////////////////////////
+
+            if(gamepad1.left_bumper){
+                downALittle = 600;
+            }
+            else{
+                downALittle = 0;
+            }
+            //////////////////////////////
             if(gamepad2.dpad_up){
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()-50);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setPower(armMotorPower);
-                robot.closeClaw();
-                clawOpen = false;
+                armTarget = robot.armMotor.getCurrentPosition()-50;
+                //robot.moveArmTo(robot.armMotor.getCurrentPosition()-50);
             }else if(gamepad2.dpad_down){
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.armMotor.setTargetPosition(robot.armMotor.getCurrentPosition()+50);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setPower(armMotorPower);
-                robot.closeClaw();
-                clawOpen = false;
+                armTarget = robot.armMotor.getCurrentPosition()+50;
+                //robot.moveArmTo(robot.armMotor.getCurrentPosition()+50);
             }
             else if(gamepad1.dpad_up){
-                //Moves are to High Score Position
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.armMotor.setTargetPosition(armPositionHighScore);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setPower(armMotorPower);
-                robot.closeClaw();
-                clawOpen = false;
+                armTarget = armPositionHighScore;
+                //robot.moveArmTo(armPositionHighScore);
             }else if(gamepad1.dpad_down){
-                //move arm down to start location
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.armMotor.setTargetPosition(armPositionStartingLocation);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setPower(armMotorPower);
-                robot.closeClaw();
-                clawOpen = false;
+                armTarget = armPositionStartingLocation;
+                //robot.moveArmTo(armPositionStartingLocation);
             }else if(gamepad1.dpad_left){
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.armMotor.setTargetPosition(armPositionMidScore);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setPower(armMotorPower);
-                robot.closeClaw();
-                clawOpen = false;
-
+                armTarget = armPositionMidScore;
+                //robot.moveArmTo(armPositionMidScore);
             }else if(gamepad1.dpad_right){
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.armMotor.setTargetPosition(armPositionLowScore);
-                robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.armMotor.setPower(armMotorPower);
-                robot.closeClaw();
-                clawOpen = false;
+                armTarget = armPositionLowScore;
+                //robot.moveArmTo(armPositionLowScore);
         }
-
+            robot.moveArmTo(armTarget-downALittle);
+//////////////////////////////////////////
             if(gamepad1.x){
                 robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
@@ -132,12 +118,12 @@ public class ArmCalibration extends LinearOpMode {
             Pose2d poseEstimate = robot.getPoseEstimate();
 
             // Print pose to telemetry
-            //telemetry.addData("x", poseEstimate.getX());
-            //telemetry.addData("y", poseEstimate.getY());
-            //telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.addData("At Bottom: ", !robot.armHeightSwitch.getState());
-            telemetry.addData("Claw is open = ", clawOpen);
-            telemetry.addData("Arm Height", robot.armMotor.getCurrentPosition());
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+//            telemetry.addData("At Bottom: ", !robot.armHeightSwitch.getState());
+//            telemetry.addData("Claw is open = ", clawOpen);
+//            telemetry.addData("Arm Height", robot.armMotor.getCurrentPosition());
             telemetry.update();
         }
     }
@@ -156,5 +142,8 @@ public class ArmCalibration extends LinearOpMode {
         }
         robot.moveArmTo(0);
         }
+public void bringArmDownSlightly(){
 
+
+}
 }
