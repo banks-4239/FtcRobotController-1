@@ -113,7 +113,7 @@ public class AutoWithConeDetectionRIGHTSIDE extends LinearOpMode {
         Vector2d zone2 = new Vector2d(35.25 * xReflect, -7.5);
         Vector2d zone3 = new Vector2d(35.25 * xReflect + 24, -6.5);
 //-30.42253007 for the x, and -2.781101 for the y values of the score.
-        Pose2d Score = new Pose2d(3.5 * xReflect, -3, Math.toRadians(135));
+        Pose2d Score = new Pose2d(30.5 * xReflect, -3, Math.toRadians(135));
         //Pose2d Score1 = new Pose2d(-30.42, -2.78, Math.toRadians(45));
         //Pose2d RedLeftConeStack = new Pose2d(-64 * xReflect, -5.75, Math.toRadians(rotateReflect - 180));
         drive.setPoseEstimate(StartPose);
