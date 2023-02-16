@@ -41,7 +41,7 @@ import java.util.ArrayList;
 
 @Config
 @Autonomous
-public class AutoWithConeDetectionRIGHTSIDE extends LinearOpMode {
+public class AutoWithConeDetectionRIGHTSIDESmallPole extends LinearOpMode {
     //RobotReference robotStuff = new RobotReference();
 
     OpenCvCamera camera;
@@ -112,9 +112,13 @@ public class AutoWithConeDetectionRIGHTSIDE extends LinearOpMode {
         Vector2d zone1 = new Vector2d(35.25 * xReflect - 24, -11);
         Vector2d zone2 = new Vector2d(35.25 * xReflect, -8);
         Vector2d zone3 = new Vector2d(35.25 * xReflect + 24, -11);
+        Vector2d midSetup = new Vector2d(35.11,-36.64);
         Vector2d coneStack = new Vector2d(36.25 + 24, -8);
 //-30.42253007 for the x, and -2.781101 for the y values of the score.
-        Pose2d Score = new Pose2d(29.5 * xReflect, -3, Math.toRadians(135));
+        Pose2d HighScore = new Pose2d(29.5 * xReflect, -3, Math.toRadians(135));
+        Pose2d LowScore = new Pose2d(43.16,-4.66, Math.toRadians(-45));
+        Pose2d MidScore = new Pose2d(26.13, -27.06, Math.toRadians(135));
+
         //Pose2d Score1 = new Pose2d(-30.42, -2.78, Math.toRadians(45));
         //Pose2d RedLeftConeStack = new Pose2d(-64 * xReflect, -5.75, Math.toRadians(rotateReflect - 180));
         drive.setPoseEstimate(StartPose);
@@ -127,56 +131,13 @@ public class AutoWithConeDetectionRIGHTSIDE extends LinearOpMode {
 //                .lineToLinearHeading(Score, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
 //                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
 //                .build();
-        TrajectorySequence startToScore = drive.trajectorySequenceBuilder(StartPose)
-                .splineTo(zone2, Math.toRadians(90))
-                .lineToLinearHeading(Score, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+        TrajectorySequence startToScoreMid = drive.trajectorySequenceBuilder(StartPose)
+                .splineTo(midSetup, Math.toRadians(90))
+                .lineToLinearHeading(MidScore, SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
 //                .splineTo(new Vector2d(-30, -4), Math.toRadians(45),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
 //                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
                 .build();
-//        TrajectorySequence scoreToZone2 = drive.trajectorySequenceBuilder(zone2ToScore.end())
-//                .lineToLinearHeading(Zone2)
-//                .build();
-
-//        TrajectorySequence scoreToConeStack = drive.trajectorySequenceBuilder(startToScore.end())
-//                .lineTo(zone2)
-//                .addDisplacementMarker(5, () -> {
-//                    drive.closeClaw();
-//                })
-//                .turn(Math.toRadians(135))
-//                .splineToSplineHeading(new Pose2d(zone1, Math.toRadians(180)), Math.toRadians(180))
-//                .addDisplacementMarker(20, () -> {
-//                    drive.openClaw();
-//                })
-//                .forward(2)
-//                .build();
-
-//        TrajectorySequence Zone1ToScore = drive.trajectorySequenceBuilder(scoreToConeStack.end())
-//                .lineTo(zone2)
-////                .turn(Math.toRadians(-60))
-//                .lineToSplineHeading(Score)
-//
-//                .build();
-
-
-//        TrajectorySequence scoreToZone2 = drive.trajectorySequenceBuilder(Zone1ToScore.end())
-//                .lineTo(zone2)
-//                .turn(Math.toRadians(45))
-//                .build();
-//        TrajectorySequence zone2ToZone1 = drive.trajectorySequenceBuilder(scoreToZone2.end())
-//                .lineTo(zone1)
-//                .build();
-//        TrajectorySequence zone2ToZone3 = drive.trajectorySequenceBuilder(scoreToZone2.end())
-//                .lineTo(zone3)
-//                .build();
-
-//        TrajectorySequence startToZone1 = drive.trajectorySequenceBuilder(startPose)
-//                .lineTo(zone2)
-//                .lineTo(zone1)
-//                .build();
-
-
-
         /*
          * The INIT-loop:
          * .addDisplacementMarker(() -> {
@@ -239,44 +200,53 @@ public class AutoWithConeDetectionRIGHTSIDE extends LinearOpMode {
          */
 
 
-        drive.moveArmTo(armPositionHighScore);
+        drive.moveArmTo(armPositionMidScore);
         //drive.followTrajectorySequence(startToZone2);
         //drive.followTrajectorySequence(zone2ToScore);
-        drive.followTrajectorySequence(startToScore);
+        drive.followTrajectorySequence(startToScoreMid);
+        sleep(500);
+        drive.moveArmTo(armPositionConeStack);
+        sleep(500);
+        drive.openClaw();
+        sleep(250);
+        TrajectorySequence midScoreToZone2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
 
+                .lineTo(midSetup)
+                .turn(Math.toRadians(-45))
+                .lineTo(zone2)
+                .turn(Math.toRadians(-90))
+                //.forward(2)
+                .build();
+        drive.followTrajectorySequence(midScoreToZone2);
         for (int i = 0; i < conesToScore - 1 && opModeIsActive() && !isStopRequested(); i++) {
-            drive.moveArmTo(armPositionConeStacks[i]);
-            sleep(500);
-            drive.openClaw();
-            sleep(250);
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", Math.toDegrees(poseEstimate.getHeading()));
-            telemetry.update();
-            TrajectorySequence scoreToConeStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
 
-                    .lineTo(zone2)
-                    .turn(Math.toRadians(-135))
+            Pose2d poseEstimate = drive.getPoseEstimate();
+
+            TrajectorySequence zone2ToConeStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .splineToSplineHeading(new Pose2d(coneStack.plus(new Vector2d(0*i,0*i)), Math.toRadians(360)), Math.toRadians(360))
                     //.forward(2)
                     .build();
-            drive.followTrajectorySequence(scoreToConeStack);
+            drive.followTrajectorySequence(zone2ToConeStack);
             drive.closeClaw();
             sleep(200);
-            drive.moveArmTo(armPositionHighScore);
+            drive.moveArmTo(armPositionLowScore);
             sleep(250);
-            Pose2d poseEstimate2 = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate2.getX());
-            telemetry.addData("y", poseEstimate2.getY());
-            telemetry.addData("heading", Math.toDegrees(poseEstimate2.getHeading()));
-            telemetry.update();
-            TrajectorySequence Zone1ToScore = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+
+            TrajectorySequence Zone1ToScoreLow = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .lineTo(zone2)
-                    .turn(Math.toRadians(135))
-                    .lineToSplineHeading(Score)
+                    .turn(Math.toRadians(-45))
+                    .lineToSplineHeading(LowScore)
                     .build();
-            drive.followTrajectorySequence(Zone1ToScore);
+            drive.followTrajectorySequence(Zone1ToScoreLow);
+            drive.moveArmTo(armPositionConeStacks[i]);
+            sleep(500);
+            drive.openClaw();
+            sleep(300);
+            TrajectorySequence scoreToZone2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineTo(zone2)
+                    .turn(Math.toRadians(45))
+                    .build();
+            drive.followTrajectorySequence(scoreToZone2);
         }
         sleep(500);
         drive.moveArmTo(armPositionStartingLocation);

@@ -29,15 +29,16 @@ public class ArmCalibration extends LinearOpMode {
 
         // Retrieve our poserobot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); from the PoseStorage.currentPose static field
         // this is what we get from autonomous
-        robot.setPoseEstimate(new Pose2d(-36.25, -62, Math.toRadians(90)));
+
+        robot.setPoseEstimate(new Pose2d(36.25, -62, Math.toRadians(90)));
         //robot.setPoseEstimate(PoseStorage.currentPose);
 
          //change values here to change everywhere
         int armTarget = 0;
         int downALittle = 0;
-        int armPositionHighScore = 3214;
-        int armPositionMidScore = 2397;
-        int armPositionLowScore = 1577;
+        int armPositionHighScore = 3114;
+        int armPositionMidScore = 2297;
+        int armPositionLowScore = 1477;
         int armPositionStartingLocation = 0;
         double armMotorPower = 0.5;
 
@@ -123,7 +124,7 @@ public class ArmCalibration extends LinearOpMode {
             telemetry.addData("heading", poseEstimate.getHeading());
 //            telemetry.addData("At Bottom: ", !robot.armHeightSwitch.getState());
 //            telemetry.addData("Claw is open = ", clawOpen);
-//            telemetry.addData("Arm Height", robot.armMotor.getCurrentPosition());
+            telemetry.addData("Arm Height", robot.armMotor.getCurrentPosition());
             telemetry.update();
         }
     }

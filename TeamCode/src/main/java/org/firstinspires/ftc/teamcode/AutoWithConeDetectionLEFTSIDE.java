@@ -66,12 +66,13 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
     int park_3 = 21;
     int xReflect = 1;
     int rotateReflect;
-    public final int armPositionHighScore = 3214;
-    public final int armPositionMidScore = 2397;
-    public final int armPositionLowScore = 1577;
+    public final int armPositionHighScore = 3114;
+    public final int armPositionMidScore = 2297;
+    public final int armPositionLowScore = 1477;
+    public final int armPositionConeStack = 680;
     public final int armPositionStartingLocation = 0;
-    public final int armPositionConeStack = 650;
-    public final int armPositionConeStackDifference = -150;
+   // public final int armPositionConeStack2 = 650;
+    public final int armPositionConeStackDifference = -165;
     double armMotorPower = 0.5;
     int armPositionLiftConeStack = 593;
     double clawOffset = 1.5;
@@ -108,13 +109,15 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
 
         robot.getConstants();
         Pose2d StartPose = new Pose2d(-36.25 * xReflect, -62, Math.toRadians(90));
-        Vector2d zone1 = new Vector2d(-35.25 * xReflect - 24, -11.5);
-        Vector2d zone2 = new Vector2d(-35.25 * xReflect, -11.5);
-        Vector2d zone3 = new Vector2d(-35.25 * xReflect + 24, -11.5);
+        Vector2d zone1 = new Vector2d(-36.25 * xReflect + 24, -11.5);
+        Vector2d zone2 = new Vector2d(-36.25 * xReflect, -11.5);
+        //zone2 -8 before
+        Vector2d zone3 = new Vector2d(-36.25 * xReflect - 28, -11.5);
+        Vector2d coneStack = new Vector2d(-(36.25 + 25.5), -11.5);
 //-30.42253007 for the x, and -2.781101 for the y values of the score.
-        Pose2d Score = new Pose2d(-30 * xReflect, -4.5, Math.toRadians(45));
+        Pose2d Score = new Pose2d(-31.5 * xReflect, -2.5, Math.toRadians(45));
         //Pose2d Score1 = new Pose2d(-30.42, -2.78, Math.toRadians(45));
-        Pose2d RedLeftConeStack = new Pose2d(-64 * xReflect, -5.75, Math.toRadians(rotateReflect - 180));
+//        Pose2d RedLeftConeStack = new Pose2d(-64 * xReflect, -5.75, Math.toRadians(rotateReflect - 180));
         drive.setPoseEstimate(StartPose);
 
 //        TrajectorySequence startToZone2 = drive.trajectorySequenceBuilder(StartPose)
@@ -127,7 +130,7 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
 //                .build();
         TrajectorySequence startToScore = drive.trajectorySequenceBuilder(StartPose)
                 .splineTo(zone2, Math.toRadians(90))
-                .splineToSplineHeading(Score, Math.toRadians(45), SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
+                .lineToLinearHeading(Score,SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
 //                .splineTo(new Vector2d(-30, -4), Math.toRadians(45),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
 //                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
@@ -250,20 +253,14 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
             sleep(250);
             TrajectorySequence scoreToConeStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .lineTo(zone2)
-                    .addDisplacementMarker(5, () -> {
-                        drive.closeClaw();
-                    })
                     .turn(Math.toRadians(135))
-                    .splineToSplineHeading(new Pose2d(zone1, Math.toRadians(180)), Math.toRadians(180))
-                    .addDisplacementMarker(20, () -> {
-                        drive.openClaw();
-                    })
-                    .forward(2)
+                    .splineToSplineHeading(new Pose2d(coneStack.plus(new Vector2d(0*i,0*i )), Math.toRadians(180)), Math.toRadians(180))
+ //                   .forward(2)
                     .build();
             drive.followTrajectorySequence(scoreToConeStack);
 
             drive.closeClaw();
-            sleep(100);
+            sleep(500);
             drive.moveArmTo(armPositionHighScore);
             sleep(250);
             TrajectorySequence Zone1ToScore = drive.trajectorySequenceBuilder(drive.getPoseEstimate())

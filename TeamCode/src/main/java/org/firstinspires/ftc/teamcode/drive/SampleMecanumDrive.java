@@ -99,7 +99,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(1.0)), 0.5);
+                new Pose2d(0.25, 0.25, Math.toRadians(1.0)), 0.5);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -341,10 +341,13 @@ rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         return new ProfileAccelerationConstraint(maxAccel);
     }
     public void openClaw() {
-        clawServo.setPosition(1);
+
+        clawServo.setPosition(0.5);
     }
     public void closeClaw() {
-        clawServo.setPosition(0.9);
+        //clawServo.setPosition(0.9);
+
+        clawServo.setPosition(0);
     }
 
     public void moveArmTo(int armPosition){

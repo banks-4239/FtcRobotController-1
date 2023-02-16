@@ -38,11 +38,11 @@ public class DriveCode2Drivers extends LinearOpMode {
         //change values here to change everywherearmHeightSwitch;
         int armTarget = 0;
         int downALittle = 0;
-        int armPositionHighScore = 3214;
-        int armPositionMidScore = 2397;
-        int armPositionLowScore = 1577;
-        int armPositionConeStack = 1008;
-        int armPositionConeStackDifference = -125;
+        int armPositionHighScore = 3114;
+        int armPositionMidScore = 2297;
+        int armPositionLowScore = 1477;
+        final int armPositionConeStack = 680;
+        int armPositionConeStackDifference = -165;
         int[] armPositionConeStacks = new int[5];
         int armPositionStartingLocation = 10;//Used to be zero
         double armMotorPower = 0.5;
