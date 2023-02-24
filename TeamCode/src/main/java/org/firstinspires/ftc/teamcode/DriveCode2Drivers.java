@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+
 @TeleOp(group = "advanced")
 public class DriveCode2Drivers extends LinearOpMode {
 
@@ -69,11 +70,11 @@ public class DriveCode2Drivers extends LinearOpMode {
                 dpadDrive = 0;
             }else if(gamepad1.dpad_up){
                 dpadStrafe = 0;
-                dpadDrive = -1;
+                dpadDrive = 1;
             }
             else if(gamepad1.dpad_down){
                 dpadStrafe = 0;
-                dpadDrive = 1;
+                dpadDrive = -1;
             }else{
                 dpadStrafe = 0;
                 dpadDrive = 0;

@@ -117,7 +117,7 @@ public class AutoWithConeDetectionRIGHTSIDESmallPole extends LinearOpMode {
         Vector2d coneStack = new Vector2d(38.25 + 24, -8);
 //-30.42253007 for the x, and -2.781101 for the y values of the score.
         Pose2d HighScore = new Pose2d(29.5 * xReflect, -3, Math.toRadians(135));
-        Pose2d LowScore = new Pose2d(45.16,-12.66, Math.toRadians(-135));
+        Pose2d LowScore = new Pose2d(60.25,-12.66, Math.toRadians(-45));
         Pose2d MidScore = new Pose2d(28.13, -27.06, Math.toRadians(135));
 
         //Pose2d Score1 = new Pose2d(-30.42, -2.78, Math.toRadians(45));
