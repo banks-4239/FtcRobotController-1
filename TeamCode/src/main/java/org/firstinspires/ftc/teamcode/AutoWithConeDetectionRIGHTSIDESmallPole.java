@@ -70,8 +70,8 @@ public class AutoWithConeDetectionRIGHTSIDESmallPole extends LinearOpMode {
     public final int armPositionMidScore = 2297;
     public final int armPositionLowScore = 1477;
     public final int armPositionStartingLocation = 0;
-    public final int armPositionConeStack = 680;
-    public final int armPositionConeStackDifference = -165;
+    public final int armPositionConeStack = 700;
+    public final int armPositionConeStackDifference = -144;
     double armMotorPower = 0.5;
     int armPositionLiftConeStack = 593;
     double clawOffset = 1.5;
@@ -110,14 +110,15 @@ public class AutoWithConeDetectionRIGHTSIDESmallPole extends LinearOpMode {
         robot.getConstants();
         Pose2d StartPose = new Pose2d(36.25 * xReflect, -62, Math.toRadians(90));
         Vector2d zone1 = new Vector2d(35.25 * xReflect - 24, -11);
-        Vector2d zone2 = new Vector2d(35.25 * xReflect, -8);
+        Vector2d zone2 = new Vector2d(35.25 * xReflect, -7.5);
+        Vector2d lowSetup = new Vector2d(60.25 * xReflect, -8);
         Vector2d zone3 = new Vector2d(35.25 * xReflect + 24, -11);
         Vector2d midSetup = new Vector2d(35.11,-36.64);
-        Vector2d coneStack = new Vector2d(36.25 + 24, -8);
+        Vector2d coneStack = new Vector2d(38.25 + 24, -8);
 //-30.42253007 for the x, and -2.781101 for the y values of the score.
         Pose2d HighScore = new Pose2d(29.5 * xReflect, -3, Math.toRadians(135));
-        Pose2d LowScore = new Pose2d(43.16,-4.66, Math.toRadians(-45));
-        Pose2d MidScore = new Pose2d(26.13, -27.06, Math.toRadians(135));
+        Pose2d LowScore = new Pose2d(45.16,-12.66, Math.toRadians(-135));
+        Pose2d MidScore = new Pose2d(28.13, -27.06, Math.toRadians(135));
 
         //Pose2d Score1 = new Pose2d(-30.42, -2.78, Math.toRadians(45));
         //Pose2d RedLeftConeStack = new Pose2d(-64 * xReflect, -5.75, Math.toRadians(rotateReflect - 180));
@@ -222,42 +223,42 @@ public class AutoWithConeDetectionRIGHTSIDESmallPole extends LinearOpMode {
 
             Pose2d poseEstimate = drive.getPoseEstimate();
 
-            TrajectorySequence zone2ToConeStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+            TrajectorySequence lowSetupToConeStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .splineToSplineHeading(new Pose2d(coneStack.plus(new Vector2d(0*i,0*i)), Math.toRadians(360)), Math.toRadians(360))
                     //.forward(2)
                     .build();
-            drive.followTrajectorySequence(zone2ToConeStack);
+            drive.followTrajectorySequence(lowSetupToConeStack);
             drive.closeClaw();
-            sleep(200);
+            sleep(500);
             drive.moveArmTo(armPositionLowScore);
             sleep(250);
 
-            TrajectorySequence Zone1ToScoreLow = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineTo(zone2)
-                    .turn(Math.toRadians(-45))
-                    .lineToSplineHeading(LowScore)
+            TrajectorySequence coneStackToScoreLow = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineTo(lowSetup)
+                    .turn(Math.toRadians(-135))
+                    .lineToLinearHeading(LowScore)
                     .build();
-            drive.followTrajectorySequence(Zone1ToScoreLow);
+            drive.followTrajectorySequence(coneStackToScoreLow);
             drive.moveArmTo(armPositionConeStacks[i]);
             sleep(500);
             drive.openClaw();
             sleep(300);
-            TrajectorySequence scoreToZone2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineTo(zone2)
-                    .turn(Math.toRadians(45))
+            TrajectorySequence scoreToLowSetup = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineTo(lowSetup)
+                    .turn(Math.toRadians(135))
                     .build();
-            drive.followTrajectorySequence(scoreToZone2);
+            drive.followTrajectorySequence(scoreToLowSetup);
         }
         sleep(500);
         drive.moveArmTo(armPositionStartingLocation);
         sleep(500);
         drive.openClaw();
         sleep(250);
-        TrajectorySequence scoreToZone2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+        TrajectorySequence scoreToLowSetup = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineTo(zone2)
-                .turn(Math.toRadians(-45))
+                .turn(Math.toRadians(45))
                 .build();
-        drive.followTrajectorySequence(scoreToZone2);
+        drive.followTrajectorySequence(scoreToLowSetup);
         if (tagOfInterest == null) {
 
         } else if (tagOfInterest.id == park_1) {
