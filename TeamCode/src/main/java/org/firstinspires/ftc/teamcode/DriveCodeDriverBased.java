@@ -2,16 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Disabled
+
 @TeleOp(group = "advanced")
-public class DriveCode2DriversDriverBased extends LinearOpMode {
+public class DriveCodeDriverBased extends LinearOpMode {
 
 
 
@@ -38,6 +37,8 @@ public class DriveCode2DriversDriverBased extends LinearOpMode {
         int armPositionHighScore = 3114;
         int armPositionMidScore = 2297;
         int armPositionLowScore = 1477;
+        int dpadStrafe;
+        int dpadDrive;
         final int armPositionConeStack = 700;
         int armPositionConeStackDifference = -144;
         int[] armPositionConeStacks = new int[5];
@@ -56,6 +57,23 @@ public class DriveCode2DriversDriverBased extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
+            if (gamepad1.dpad_right){
+                dpadStrafe = 1;
+                dpadDrive = 0;
+            }else if(gamepad1.dpad_left){
+                dpadStrafe = -1;
+                dpadDrive = 0;
+            }else if(gamepad1.dpad_up){
+                dpadStrafe = 0;
+                dpadDrive = -1;
+            }
+            else if(gamepad1.dpad_down){
+                dpadStrafe = 0;
+                dpadDrive = 1;
+            }else{
+                dpadStrafe = 0;
+                dpadDrive = 0;
+            }
             if(gamepad1.left_bumper){
                 downALittle = 600;
             }
@@ -76,7 +94,7 @@ public class DriveCode2DriversDriverBased extends LinearOpMode {
                 armTarget = armPositionLowScore;
                 //robot.moveArmTo(armPositionLowScore);
             }
-            else if(gamepad2.start){
+            else if(gamepad2.back){
                 calibrateArm();
             }
             else if(gamepad2.y){
@@ -111,11 +129,11 @@ public class DriveCode2DriversDriverBased extends LinearOpMode {
             robot.setWeightedDrivePower(
                     new Pose2d(
                             //-forward/backward
-                            -(gamepad1.left_stick_y/2),
+                            -(gamepad1.left_stick_y/2+dpadDrive),
                             //-strafe
-                            -(gamepad1.left_stick_x/2),
+                            -(gamepad1.left_stick_x/2+dpadStrafe),
                             //-rotate
-                            -(gamepad1.right_stick_x/2)
+                            Math.toRadians(90)//-(gamepad1.right_stick_x/2)
                     )
             );
 

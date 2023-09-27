@@ -41,7 +41,7 @@ import java.util.ArrayList;
 
 @Config
 @Autonomous
-public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
+public class RemoteLEFT extends LinearOpMode {
     //RobotReference robotStuff = new RobotReference();
 
     OpenCvCamera camera;
@@ -75,7 +75,7 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
     public final int armPositionConeStackDifference = -165;
     double armMotorPower = 0.5;
     int armPositionLiftConeStack = 593;
-    double clawOffset = 1.5; 
+    double clawOffset = 1.5;
     double tileWidth = 23.5;
     double speedConstant = 0.5;
     double slow = 0.5;
@@ -109,13 +109,12 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
 
         robot.getConstants();
         Pose2d StartPose = new Pose2d(-36.25 * xReflect, -62, Math.toRadians(90));
-        Vector2d zone1 = new Vector2d(-36.25 * xReflect + 24, -11.5);
+        Vector2d zone1 = new Vector2d(-36.25 * xReflect - 24, -11.5);
         Vector2d zone2 = new Vector2d(-36.25 * xReflect, -11.5);
-        //zone2 -8 before
-        Vector2d zone3 = new Vector2d(-36.25 * xReflect - 28, -11.5);
-        Vector2d coneStack = new Vector2d(-(36.25 + 25.5), -11.5);
+        Vector2d zone3 = new Vector2d(-36.25 * xReflect + 28, -11.5);
+        Pose2d coneStack = new Pose2d(-(36.25 + 25.5), -11.5, Math.toRadians(180));
 //-30.42253007 for the x, and -2.781101 for the y values of the score.
-        Pose2d Score = new Pose2d(-31.5 * xReflect, -2.5, Math.toRadians(45));
+        Pose2d Score = new Pose2d(-6.41 * xReflect, -20.26, Math.toRadians(-45));
         //Pose2d Score1 = new Pose2d(-30.42, -2.78, Math.toRadians(45));
 //        Pose2d RedLeftConeStack = new Pose2d(-64 * xReflect, -5.75, Math.toRadians(rotateReflect - 180));
         drive.setPoseEstimate(StartPose);
@@ -129,7 +128,8 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
 //                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
 //                .build();
         TrajectorySequence startToScore = drive.trajectorySequenceBuilder(StartPose)
-                .splineTo(zone2, Math.toRadians(90))
+                .lineTo(zone2)
+                .lineTo(zone3)
                 .lineToLinearHeading(Score,SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL * speedConstant))
 //                .splineTo(new Vector2d(-30, -4), Math.toRadians(45),SampleMecanumDrive.getVelocityConstraint((DriveConstants.MAX_VEL * speedConstant), DriveConstants.MAX_ANG_VEL * speedConstant, DriveConstants.TRACK_WIDTH),
@@ -147,7 +147,7 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
 //                .turn(Math.toRadians(135))
 //                .splineToSplineHeading(new Pose2d(zone1, Math.toRadians(180)), Math.toRadians(180))
 //                .addDisplacementMarker(20, () -> {
-//                    drive.openClaw(); 
+//                    drive.openClaw();
 //                })
 //                .forward(2)
 //                .build();
@@ -252,9 +252,9 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
             drive.openClaw();
             sleep(250);
             TrajectorySequence scoreToConeStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineTo(zone2)
-                    .turn(Math.toRadians(135))
-                    .splineToSplineHeading(new Pose2d(coneStack.plus(new Vector2d(0*i,0*i )), Math.toRadians(180)), Math.toRadians(180))
+                    .lineTo(zone3)
+                    .lineToLinearHeading(coneStack)
+
  //                   .forward(2)
                     .build();
             drive.followTrajectorySequence(scoreToConeStack);
@@ -264,9 +264,9 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
             drive.moveArmTo(armPositionHighScore);
             sleep(250);
             TrajectorySequence Zone1ToScore = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineTo(zone2)
+                    .lineTo(zone3)
                     .turn(Math.toRadians(-135))
-                    .lineToSplineHeading(Score)
+                    .lineToLinearHeading(Score)
 
                     .build();
             drive.followTrajectorySequence(Zone1ToScore);

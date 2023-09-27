@@ -41,7 +41,8 @@ import java.util.ArrayList;
 
 @Config
 @Autonomous
-public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
+@
+public class REMOTEAutoWithConeDetectionLEFTSIDE extends LinearOpMode {
     //RobotReference robotStuff = new RobotReference();
 
     OpenCvCamera camera;
@@ -69,15 +70,15 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
     public final int armPositionHighScore = 3114;
     public final int armPositionMidScore = 2297;
     public final int armPositionLowScore = 1477;
-    public final int armPositionConeStack = 680;
+    public final int armPositionConeStack = 670;
     public final int armPositionStartingLocation = 0;
    // public final int armPositionConeStack2 = 650;
     public final int armPositionConeStackDifference = -165;
     double armMotorPower = 0.5;
     int armPositionLiftConeStack = 593;
-    double clawOffset = 1.5; 
+    double clawOffset = 1.5;
     double tileWidth = 23.5;
-    double speedConstant = 0.5;
+    double speedConstant =0.90;
     double slow = 0.5;
     int[] armPositionConeStacks = new int[5];
     int conesToScore = 3;
@@ -108,14 +109,21 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
         telemetry.setMsTransmissionInterval(50);
 
         robot.getConstants();
+         Vector2d zone3Park = new Vector2d(-36.25 * xReflect + 28, -9.5);
+        Vector2d zone2Park = new Vector2d(-36.25 * xReflect, -9.5);
+
+        Vector2d zone1Park = new Vector2d(-36.25 * xReflect - 25.5, -9.5);
+
         Pose2d StartPose = new Pose2d(-36.25 * xReflect, -62, Math.toRadians(90));
-        Vector2d zone1 = new Vector2d(-36.25 * xReflect + 24, -11.5);
+        Vector2d zone1 = new Vector2d(-36.25 * xReflect - 24, -11.5);
         Vector2d zone2 = new Vector2d(-36.25 * xReflect, -11.5);
         //zone2 -8 before
-        Vector2d zone3 = new Vector2d(-36.25 * xReflect - 28, -11.5);
+        Vector2d zone3 = new Vector2d(-36.25 * xReflect + 28, -11.5);
         Vector2d coneStack = new Vector2d(-(36.25 + 25.5), -11.5);
 //-30.42253007 for the x, and -2.781101 for the y values of the score.
-        Pose2d Score = new Pose2d(-31.5 * xReflect, -2.5, Math.toRadians(45));
+        Pose2d Score = new Pose2d(-29.5 * xReflect, -2, Math.toRadians(45));
+        Pose2d Score2 = new Pose2d(-2 * xReflect, -13.43, Math.toRadians(-45));
+
         //Pose2d Score1 = new Pose2d(-30.42, -2.78, Math.toRadians(45));
 //        Pose2d RedLeftConeStack = new Pose2d(-64 * xReflect, -5.75, Math.toRadians(rotateReflect - 180));
         drive.setPoseEstimate(StartPose);
@@ -147,7 +155,7 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
 //                .turn(Math.toRadians(135))
 //                .splineToSplineHeading(new Pose2d(zone1, Math.toRadians(180)), Math.toRadians(180))
 //                .addDisplacementMarker(20, () -> {
-//                    drive.openClaw(); 
+//                    drive.openClaw();
 //                })
 //                .forward(2)
 //                .build();
@@ -240,60 +248,71 @@ public class AutoWithConeDetectionLEFTSIDE extends LinearOpMode {
          */
 
 
-        drive.moveArmTo(armPositionHighScore);
+        drive.moveArmTo(armPositionLowScore);
         //drive.followTrajectorySequence(startToZone2);
         //drive.followTrajectorySequence(zone2ToScore);
         drive.followTrajectorySequence(startToScore);
-
-        for (int i = 0; i < conesToScore - 1 && opModeIsActive() && !isStopRequested(); i++) {
-
-            drive.moveArmTo(armPositionConeStacks[i]);
-            sleep(500);
-            drive.openClaw();
-            sleep(250);
-            TrajectorySequence scoreToConeStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineTo(zone2)
-                    .turn(Math.toRadians(135))
-                    .splineToSplineHeading(new Pose2d(coneStack.plus(new Vector2d(0*i,0*i )), Math.toRadians(180)), Math.toRadians(180))
- //                   .forward(2)
-                    .build();
-            drive.followTrajectorySequence(scoreToConeStack);
-
+        drive.moveArmTo(armPositionConeStacks[0]);
+        sleep(500);
+        drive.openClaw();
+        sleep(250);
+        TrajectorySequence scoreToConeStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineTo(zone2)
+                .turn(Math.toRadians(135))
+                .splineToSplineHeading(new Pose2d(coneStack.plus(new Vector2d(0,0 )), Math.toRadians(180)), Math.toRadians(180))
+                //                   .forward(2)
+                .build();
+        drive.followTrajectorySequence(scoreToConeStack);
+        for (int i = 1; i < conesToScore  && opModeIsActive() && !isStopRequested(); i++) {
             drive.closeClaw();
             sleep(500);
             drive.moveArmTo(armPositionHighScore);
             sleep(250);
-            TrajectorySequence Zone1ToScore = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineTo(zone2)
-                    .turn(Math.toRadians(-135))
-                    .lineToSplineHeading(Score)
-
+            TrajectorySequence Zone1ToScore2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineTo(zone3)
+                    .turn(Math.toRadians(135))
+                    .lineToSplineHeading(Score2)
                     .build();
-            drive.followTrajectorySequence(Zone1ToScore);
-
+            drive.followTrajectorySequence(Zone1ToScore2);
+            drive.moveArmTo(armPositionConeStacks[i]);
+            sleep(500);
+            drive.openClaw();
+            sleep(250);
+            if(i==conesToScore-1){
+                break;
+            }
+            TrajectorySequence score2ToConeStack = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineTo(zone3)
+                    .turn(Math.toRadians(-135))
+                    .splineToSplineHeading(new Pose2d(coneStack.plus(new Vector2d(0*i,0*i )), Math.toRadians(180)), Math.toRadians(180))
+                    //                   .forward(2)
+                    .build();
+            drive.followTrajectorySequence(score2ToConeStack);
         }
-        sleep(500);
-        drive.moveArmTo(armPositionStartingLocation);
-        sleep(500);
-        drive.openClaw();
-        sleep(250);
-        TrajectorySequence scoreToZone2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineTo(zone2)
+
+//        sleep(500);
+//        drive.moveArmTo(armPositionStartingLocation);
+//        sleep(500);
+//        drive.openClaw();
+//        sleep(250);
+        TrajectorySequence scoreToZone3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineTo(zone3Park)
+                //.lineTo(zone2)
                 .turn(Math.toRadians(45))
                 .build();
-        drive.followTrajectorySequence(scoreToZone2);
+        drive.followTrajectorySequence(scoreToZone3);
         if (tagOfInterest == null) {
 
         } else if (tagOfInterest.id == park_1) {
-            TrajectorySequence zone2ToZone1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineTo(zone1)
+            TrajectorySequence zone3ToZone1 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineTo(zone1Park)
                     .build();
-            drive.followTrajectorySequence(zone2ToZone1);
-        } else if (tagOfInterest.id == park_3) {
-            TrajectorySequence zone2ToZone3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineTo(zone3)
+            drive.followTrajectorySequence(zone3ToZone1);
+        } else if (tagOfInterest.id == park_2) {
+            TrajectorySequence zone3ToZone2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineTo(zone2Park)
                     .build();
-            drive.followTrajectorySequence(zone2ToZone3);
+            drive.followTrajectorySequence(zone3ToZone2);
         }
 
 

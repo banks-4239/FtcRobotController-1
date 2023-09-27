@@ -30,7 +30,7 @@ public class ArmCalibration extends LinearOpMode {
         // Retrieve our poserobot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); from the PoseStorage.currentPose static field
         // this is what we get from autonomous
 
-        robot.setPoseEstimate(new Pose2d(36.25, -62, Math.toRadians(90)));
+        robot.setPoseEstimate(new Pose2d(-36.25, -62, Math.toRadians(90)));
         //robot.setPoseEstimate(PoseStorage.currentPose);
 
          //change values here to change everywhere
